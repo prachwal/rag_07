@@ -9,9 +9,9 @@ from typing import Optional
 
 import click
 
-from .config.config_manager import ConfigManager
-from .services.application_service import ApplicationService
-from .utils.logger import get_logger
+from src.config.config_manager import ConfigManager
+from src.services.application_service import ApplicationService
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -186,6 +186,91 @@ def list_providers(ctx: click.Context, provider_type: str) -> None:
         click.echo('Available Vector DB Providers:')
         for provider in vector_providers:
             click.echo(f'  • {provider}')
+
+
+@cli.command()
+@click.option('--provider', '-p', help='Vector database provider')
+@click.pass_context
+def list_collections(ctx: click.Context, provider: Optional[str]) -> None:
+    """List all collections in vector database."""
+
+    async def _list_collections():
+        try:
+            config_manager: ConfigManager = ctx.obj['config_manager']
+
+            provider_name = provider or config_manager.config.default_vector_provider
+
+            from src.providers.base import ProviderFactory
+
+            factory = ProviderFactory(config_manager)
+            vector_provider = await factory.create_vector_provider(provider_name)
+
+            if hasattr(vector_provider, 'list_collections'):
+                collections = await vector_provider.list_collections()
+
+                if collections:
+                    click.echo(f'Collections in {provider_name}:')
+                    for collection in collections:
+                        try:
+                            info = await vector_provider.get_collection_info(collection)
+                            count = info.get('count', 0)
+                            click.echo(f'  • {collection} ({count} vectors)')
+                        except Exception:
+                            click.echo(f'  • {collection}')
+                else:
+                    click.echo(f'No collections found in {provider_name}')
+            else:
+                click.echo(
+                    f'Provider {provider_name} does not support listing collections'
+                )
+
+            await vector_provider.cleanup()
+
+        except Exception as e:
+            logger.error(f'Failed to list collections: {e}')
+            raise click.ClickException(f'Error: {e}')
+
+    import asyncio
+
+    asyncio.run(_list_collections())
+
+
+@cli.command()
+@click.argument('collection_name')
+@click.option('--provider', '-p', help='Vector database provider')
+@click.pass_context
+def collection_info(
+    ctx: click.Context, collection_name: str, provider: Optional[str]
+) -> None:
+    """Get information about a collection."""
+
+    async def _collection_info():
+        try:
+            config_manager: ConfigManager = ctx.obj['config_manager']
+
+            provider_name = provider or config_manager.config.default_vector_provider
+
+            from src.providers.base import ProviderFactory
+
+            factory = ProviderFactory(config_manager)
+            vector_provider = await factory.create_vector_provider(provider_name)
+
+            info = await vector_provider.get_collection_info(collection_name)
+
+            click.echo(f'Collection: {collection_name}')
+            click.echo(f'Provider: {provider_name}')
+            click.echo(f'Vector count: {info.get("count", 0)}')
+            click.echo(f'Dimension: {info.get("dimension", "N/A")}')
+
+            await vector_provider.cleanup()
+
+        except Exception as e:
+            logger.error(f'Failed to get collection info: {e}')
+            raise click.ClickException(f'Error: {e}')
+
+    import asyncio
+
+    asyncio.run(_collection_info())
 
 
 def main() -> None:

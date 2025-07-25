@@ -6,9 +6,9 @@ Implements Factory pattern for provider instantiation.
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Type, TypeVar
 
-from ..config.config_manager import ConfigManager
-from ..exceptions import ProviderError
-from ..utils.logger import LoggerMixin
+from src.config.config_manager import ConfigManager
+from src.exceptions import ProviderError
+from src.utils.logger import LoggerMixin
 
 T = TypeVar('T', bound='BaseProvider')
 
@@ -19,6 +19,8 @@ class BaseProvider(ABC, LoggerMixin):
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.name = config.get('name', 'unknown')
+        # Will be set by factory
+        self.config_manager: Optional[ConfigManager] = None
 
     @abstractmethod
     async def initialize(self) -> None:
@@ -47,11 +49,18 @@ class LLMProvider(BaseProvider):
         pass
 
     @abstractmethod
+    async def generate_embeddings(
+        self, texts: List[str], model: Optional[str] = None
+    ) -> List[List[float]]:
+        """Generate embedding vectors for texts."""
+        pass
+
     async def generate_embedding(
         self, text: str, model: Optional[str] = None
     ) -> List[float]:
-        """Generate embedding vector for text."""
-        pass
+        """Generate embedding vector for single text."""
+        results = await self.generate_embeddings([text], model)
+        return results[0] if results else []
 
 
 class VectorDBProvider(BaseProvider):
@@ -116,35 +125,64 @@ class ProviderFactory(LoggerMixin):
         """Register default provider implementations."""
         # Import here to avoid circular imports
         try:
-            from providers.llm.openai_provider import OpenAIProvider
+            from .llm.openai_provider import OpenAIProvider
 
             self._llm_providers['openai'] = OpenAIProvider
         except ImportError:
             self.logger.warning('OpenAI provider not available')
 
         try:
-            from providers.llm.anthropic_provider import AnthropicProvider
+            from .llm.anthropic_provider import AnthropicProvider
 
+            # type: ignore
             self._llm_providers['anthropic'] = AnthropicProvider
         except ImportError:
             self.logger.warning('Anthropic provider not available')
 
         try:
-            from providers.vector.faiss_provider import FAISSProvider
+            from .llm.google_provider import GoogleProvider
+
+            self._llm_providers['google'] = GoogleProvider
+        except ImportError:
+            self.logger.warning('Google provider not available')
+
+        try:
+            from .llm.openrouter_provider import OpenRouterProvider
+
+            self._llm_providers['openrouter'] = OpenRouterProvider
+        except ImportError:
+            self.logger.warning('OpenRouter provider not available')
+
+        try:
+            from .llm.ollama_provider import OllamaProvider
+
+            self._llm_providers['ollama'] = OllamaProvider
+        except ImportError:
+            self.logger.warning('Ollama provider not available')
+
+        try:
+            from .llm.lmstudio_provider import LMStudioProvider
+
+            self._llm_providers['lmstudio'] = LMStudioProvider
+        except ImportError:
+            self.logger.warning('LM Studio provider not available')
+
+        try:
+            from .vector.faiss_provider import FAISSProvider
 
             self._vector_providers['faiss'] = FAISSProvider
         except ImportError:
             self.logger.warning('FAISS provider not available')
 
         try:
-            from providers.vector.chroma_provider import ChromaProvider
+            from .vector.chroma_provider import ChromaProvider
 
             self._vector_providers['chroma'] = ChromaProvider
         except ImportError:
             self.logger.warning('Chroma provider not available')
 
         try:
-            from providers.text.basic_processor import BasicTextProcessor
+            from .text.basic_processor import BasicTextProcessor
 
             self._text_processors['basic'] = BasicTextProcessor
         except ImportError:
@@ -178,7 +216,8 @@ class ProviderFactory(LoggerMixin):
 
         config = self.config_manager.get_llm_provider_config(name)
         provider_class = self._llm_providers[name]
-        provider = provider_class(config.dict())
+        provider = provider_class(config.model_dump())
+        provider.config_manager = self.config_manager
         await provider.initialize()
 
         self.log_operation('created_llm_provider', provider=name)
@@ -191,7 +230,8 @@ class ProviderFactory(LoggerMixin):
 
         config = self.config_manager.get_vector_provider_config(name)
         provider_class = self._vector_providers[name]
-        provider = provider_class(config.dict())
+        provider = provider_class(config.model_dump())
+        provider.config_manager = self.config_manager
         await provider.initialize()
 
         self.log_operation('created_vector_provider', provider=name)

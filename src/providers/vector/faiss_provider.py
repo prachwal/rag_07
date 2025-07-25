@@ -1,16 +1,15 @@
 """
-Basic FAISS provider implementation for vector database operations.
-Handles vector storage and similarity search using FAISS.
+FAISS provider implementation for vector database operations.
+Handles vector storage and similarity search using Facebook's FAISS library.
 """
 
 import json
-import pickle
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import numpy as np
 
-from ...exceptions import VectorDBError
+from src.exceptions import VectorDBError
 from ..base import VectorDBProvider
 
 
@@ -225,3 +224,56 @@ class FAISSProvider(VectorDBProvider):
         metadata_path.unlink(missing_ok=True)
 
         self.log_operation('deleted_collection', collection=collection_name)
+
+    async def list_collections(self) -> List[str]:
+        """List all collections."""
+        try:
+            collections = list(self.collections.keys())
+            return collections
+        except Exception as e:
+            raise VectorDBError(f'Failed to list collections: {e}')
+
+    async def get_collection_info(self, collection_name: str) -> Dict[str, Any]:
+        """Get information about a collection."""
+        if collection_name not in self.collections:
+            raise VectorDBError(f'Collection {collection_name} does not exist')
+
+        collection = self.collections[collection_name]
+        return {
+            'name': collection_name,
+            'count': collection['index'].ntotal,
+            'dimension': collection['index'].d,
+            'metadata_count': len(collection['metadata']),
+        }
+
+    async def browse_vectors(
+        self, collection_name: str, offset: int = 0, limit: int = 10
+    ) -> List[Dict[str, Any]]:
+        """Browse vectors in a collection."""
+        if collection_name not in self.collections:
+            raise VectorDBError(f'Collection {collection_name} does not exist')
+
+        collection = self.collections[collection_name]
+        total_count = collection['index'].ntotal
+
+        if offset >= total_count:
+            return []
+
+        end_idx = min(offset + limit, total_count)
+        results = []
+
+        for i in range(offset, end_idx):
+            if i < len(collection['metadata']):
+                result = {
+                    'id': f'{collection_name}_{i}',
+                    'text': collection['metadata'][i],
+                    'metadata': (
+                        collection['extra_metadata'][i]
+                        if i < len(collection['extra_metadata'])
+                        else {}
+                    ),
+                    'index': i,
+                }
+                results.append(result)
+
+        return results

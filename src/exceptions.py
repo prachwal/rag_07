@@ -3,6 +3,8 @@ Custom exceptions for RAG_07 application.
 Defines application-specific exception hierarchy.
 """
 
+from typing import Optional
+
 
 class RAGApplicationError(Exception):
     """Base exception for RAG application errors."""
@@ -43,7 +45,12 @@ class TextProcessorError(ProviderError):
 class APIError(RAGApplicationError):
     """Raised when external API calls fail."""
 
-    def __init__(self, message: str, status_code: int = None, provider: str = None):
+    def __init__(
+        self,
+        message: str,
+        status_code: Optional[int] = None,
+        provider: Optional[str] = None,
+    ):
         super().__init__(message)
         self.status_code = status_code
         self.provider = provider
@@ -58,6 +65,6 @@ class ValidationError(RAGApplicationError):
 class RetryExhaustedError(RAGApplicationError):
     """Raised when retry attempts are exhausted."""
 
-    def __init__(self, message: str, attempts: int = None):
+    def __init__(self, message: str, attempts: Optional[int] = None):
         super().__init__(message)
         self.attempts = attempts

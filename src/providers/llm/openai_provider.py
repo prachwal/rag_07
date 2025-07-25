@@ -3,20 +3,37 @@ OpenAI provider implementation for LLM operations.
 Handles text generation and embedding using OpenAI API.
 """
 
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 import aiohttp
 
-from ...exceptions import APIError, LLMProviderError
+from src.exceptions import APIError, LLMProviderError
 from ..base import LLMProvider
 
 
 class OpenAIProvider(LLMProvider):
     """OpenAI implementation of LLM provider."""
 
+    def __init__(self, config: Dict[str, Any]) -> None:
+        """Initialize OpenAI provider."""
+        super().__init__(config)
+        # Initialize type annotations
+        self.session: Any = None
+        self.base_url: str = ""
+        self.default_model: str = ""
+
     async def initialize(self) -> None:
         """Initialize OpenAI provider."""
-        self.api_key = self.config.get('api_key')
+        if self.config_manager is None:
+            raise LLMProviderError(
+                'Config manager not set - ' 'use ProviderFactory to create providers'
+            )
+
+        # At this point config_manager is guaranteed to be not None
+        assert self.config_manager is not None
+
+        api_key_env = self.config['api_key_env']
+        self.api_key = self.config_manager.get_api_key(api_key_env)
         self.base_url = self.config.get('base_url', 'https://api.openai.com/v1')
         self.default_model = self.config.get('default_model', 'gpt-3.5-turbo')
         self.timeout = self.config.get('timeout', 30)
@@ -125,3 +142,13 @@ class OpenAIProvider(LLMProvider):
             ) from e
         except KeyError as e:
             raise LLMProviderError(f'Invalid OpenAI embedding response: {e}') from e
+
+    async def generate_embeddings(
+        self, texts: List[str], model: Optional[str] = None
+    ) -> List[List[float]]:
+        """Generate embeddings for multiple texts."""
+        embeddings = []
+        for text in texts:
+            embedding = await self.generate_embedding(text, model)
+            embeddings.append(embedding)
+        return embeddings

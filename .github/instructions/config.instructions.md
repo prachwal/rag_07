@@ -6,7 +6,7 @@ applyTo: '**'
 - Punkt wejściowy: src/main.py (tylko uruchamianie, brak logiki)
 - Struktura katalogów:
   - src/cli.py – obsługa CLI
-  - src/services/ – logika biznesowa (każdy plik = 1 odpowiedzialność)  
+  - src/services/ – logika biznesowa (każdy plik = 1 odpowiedzialność)
   - src/utils/ – funkcje pomocnicze (np. logger.py)
   - src/models/ – modele danych
   - src/exceptions.py – dedykowane wyjątki
@@ -33,6 +33,13 @@ applyTo: '**'
 - setup.sh – instaluje zależności z requirements.txt (lub poetry/pdm install)
 - Pliki mają pojedynczą odpowiedzialność, brak logiki w main/cli
 - Testy muszą pokrywać całość logiki + mocking zewnętrznych API
+- **WARUNKI COMMITU**:
+  - WSZYSTKIE testy muszą przechodzić (100% success rate)
+  - Test coverage minimum 85%
+  - Testy API connectivity dla aktywnych providerów
+  - Linting/formatowanie bez błędów (black + ruff)
+  - Skrypty testowe: test_all.sh, test_providers.sh, test_api_connectivity.sh
+  - Pre-commit hook uruchamia pełny test suite
 - Jakość kodu:
   - Logowanie: Ustrukturyzowane logi (JSON) przez dedykowany logger
   - Linting/Formatowanie: `black` + `ruff` (zautomatyzowane przez pre-commit)

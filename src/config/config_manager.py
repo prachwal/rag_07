@@ -11,8 +11,8 @@ from typing import Any, Dict, List, Optional
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
-from ..exceptions import ConfigurationError
-from ..utils.logger import LoggerMixin
+from src.exceptions import ConfigurationError
+from src.utils.logger import LoggerMixin
 
 
 class LLMProviderConfig(BaseModel):

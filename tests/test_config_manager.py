@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from src.config.config_manager import AppConfig, ConfigManager
+from src.config.config_manager import ConfigManager
 from src.exceptions import ConfigurationError
 
 

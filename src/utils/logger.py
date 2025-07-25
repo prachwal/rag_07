@@ -3,11 +3,10 @@ Logger utility module for structured logging.
 Provides JSON-structured logging with configurable levels.
 """
 
-import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import structlog
 
@@ -39,7 +38,7 @@ def setup_logging(
     )
 
     # Configure standard library logging
-    handlers = [logging.StreamHandler(sys.stdout)]
+    handlers: list = [logging.StreamHandler(sys.stdout)]
     if log_file:
         handlers.append(logging.FileHandler(log_file))
 
@@ -70,7 +69,9 @@ class LoggerMixin:
             **kwargs,
         )
 
-    def log_error(self, error: Exception, operation: str = None, **kwargs: Any) -> None:
+    def log_error(
+        self, error: Exception, operation: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """Log an error with structured data."""
         self.logger.error(
             'error_occurred',
