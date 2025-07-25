@@ -1,0 +1,46 @@
+{
+  "name": "rag_07",
+  "version": "1.0.0",
+  "description": "Mixed Python and TypeScript/JavaScript project with consistent formatting",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "python:format": "black src/",
+    "python:lint": "pylint src/",
+    "python:isort": "isort src/",
+    "python:format-all": "npm run python:isort && npm run python:format",
+    "format:all": "npm run python:format-all && npm run format",
+    "lint:all": "npm run python:lint && npm run lint",
+    "test": "jest",
+    "test:python": "pytest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^4.4.0"
+  },
+  "dependencies": {},
+  "keywords": [
+    "python",
+    "typescript",
+    "javascript",
+    "formatting",
+    "linting"
+  ],
+  "author": "",
+  "license": "MIT"
+}

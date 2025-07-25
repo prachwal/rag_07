@@ -1,0 +1,110 @@
+# Gitignore file for mixed Python and TypeScript/JavaScript project
+
+# ===== DEPENDENCIES =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python packages
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+site-packages/
+
+# ===== BUILD OUTPUTS =====
+dist/
+build/
+*.tsbuildinfo
+*.egg-info/
+.eggs/
+
+# ===== ENVIRONMENT FILES =====
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.envrc
+
+# ===== IDE AND EDITOR FILES =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ===== OS GENERATED FILES =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ===== LOGS =====
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== TESTING =====
+coverage/
+.nyc_output/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# ===== CACHE DIRECTORIES =====
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+
+# ===== TEMPORARY FILES =====
+*.tmp
+*.temp
+.temp/
+.tmp/
+
+# ===== DOCUMENTATION =====
+docs/_build/
+public/docs/
+
+# ===== JUPYTER NOTEBOOKS =====
+.ipynb_checkpoints
+
+# ===== MYPY =====
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ===== CERTIFICATES =====
+*.pem
+*.key
+*.crt
+
+# ===== DATABASES =====
+*.db
+*.sqlite
+*.sqlite3
+
+# ===== MISC =====
+.git-blame-ignore-revs
