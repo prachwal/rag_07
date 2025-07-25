@@ -19,9 +19,19 @@
     "format:all": "npm run python:format-all && npm run format",
     "lint:all": "npm run python:lint && npm run lint",
     "test": "jest",
-    "test:python": "pytest"
+    "test:python": "pytest",
+    "docs:generate": "./docs_generate.sh",
+    "docs:build": "npm run docs:python",
+    "docs:serve": "cd docs/python/_build/html && python -m http.server 8080",
+    "docs:python": "cd docs/python && sphinx-build -b html . _build/html",
+    "docs:typescript": "typedoc",
+    "docs:clean": "rm -rf docs/python/_build docs/python/.doctrees",
+    "docs:watch": "cd docs/python && sphinx-autobuild . _build/html --port 8080",
+    "docs:open": "python -c \"import webbrowser; webbrowser.open('file://' + __import__('os').getcwd() + '/docs_index.html')\"",
+    "docs:dev": "npm run docs:build && npm run docs:open"
   },
   "devDependencies": {
+    "@microsoft/tsdoc": "^0.14.2",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -30,10 +40,11 @@
     "eslint-plugin-react": "^7.33.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.0.0",
+    "typedoc": "^0.25.13",
+    "typedoc-plugin-markdown": "^3.17.1",
     "typescript": "^5.0.0",
     "vite": "^4.4.0"
   },
-  "dependencies": {},
   "keywords": [
     "python",
     "typescript",
