@@ -11,7 +11,7 @@ src_path = Path(__file__).parent
 sys.path.insert(0, str(src_path))
 
 # Import after path setup
-from src.cli import main  # type: ignore # noqa: E402
+from cli import main  # type: ignore # noqa: E402
 
 if __name__ == '__main__':
     main()

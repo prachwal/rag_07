@@ -189,6 +189,149 @@ def list_providers(ctx: click.Context, provider_type: str) -> None:
 
 
 @cli.command()
+@click.option('--provider', '-p', help='LLM provider to list models for')
+@click.option('--no-cache', is_flag=True, help='Skip cache and fetch fresh data')
+@click.option(
+    '--format',
+    '-f',
+    type=click.Choice(['table', 'json', 'simple']),
+    default='table',
+    help='Output format',
+)
+@click.pass_context
+def list_models(
+    ctx: click.Context, provider: Optional[str], no_cache: bool, format: str
+) -> None:
+    """List available models for LLM providers."""
+
+    async def _list_models():
+        try:
+            config_manager: ConfigManager = ctx.obj['config_manager']
+
+            from src.providers.base import ProviderFactory
+
+            factory = ProviderFactory(config_manager)
+
+            # Get list of providers to check
+            if provider:
+                providers = [provider]
+            else:
+                providers = config_manager.get_available_llm_providers()
+
+            all_models = {}
+
+            for provider_name in providers:
+                try:
+                    llm_provider = await factory.create_llm_provider(provider_name)
+                    models_response = await llm_provider.list_models(
+                        use_cache=not no_cache
+                    )
+                    all_models[provider_name] = models_response
+                    await llm_provider.cleanup()
+                except Exception as e:
+                    msg = f"Error fetching models for {provider_name}: {e}"
+                    click.echo(msg, err=True)
+                    continue
+
+            # Display results based on format
+            if format == 'simple':
+                for prov, response in all_models.items():
+                    click.echo(f"\n{prov.upper()} ({response.total_count}):")
+                    for model in response.models:
+                        pricing_info = ""
+                        if model.pricing:
+                            inp = model.pricing.input_price_per_million or 0
+                            out = model.pricing.output_price_per_million or 0
+                            pricing_info = f" (${inp:.2f}/${out:.2f})"
+                        click.echo(f"  • {model.id}{pricing_info}")
+
+            else:  # table format (default)
+                for prov, response in all_models.items():
+                    click.echo(f"\n=== {prov.upper()} Models ===")
+                    click.echo(f"Total: {response.total_count} models")
+                    if response.cached:
+                        click.echo("(Using cached data)")
+
+                    click.echo(
+                        f"{'Model ID':<30} {'Tokens':<8} {'Tools':<6} "
+                        f"{'Vision':<7} {'Price/M':<12}"
+                    )
+                    click.echo("-" * 70)
+
+                    for model in response.models:
+                        pricing_str = "N/A"
+                        if model.pricing:
+                            inp = model.pricing.input_price_per_million or 0
+                            out = model.pricing.output_price_per_million or 0
+                            pricing_str = f"${inp:.1f}/${out:.1f}"
+
+                        tokens_str = str(model.max_tokens or 'N/A')
+                        tools_str = "Yes" if model.supports_tools else "No"
+                        vision_str = "Yes" if model.multimodal else "No"
+
+                        click.echo(
+                            f"{model.id:<30} {tokens_str:<8} "
+                            f"{tools_str:<6} {vision_str:<7} {pricing_str:<12}"
+                        )
+
+        except Exception as e:
+            click.echo(f'Error: {e}', err=True)
+
+    asyncio.run(_list_models())
+
+
+@cli.command()
+@click.option('--provider', '-p', help='Clear cache for specific provider')
+@click.option('--all', 'clear_all', is_flag=True, help='Clear cache for all providers')
+@click.pass_context
+def clear_cache(ctx: click.Context, provider: Optional[str], clear_all: bool) -> None:
+    """Clear model cache for providers."""
+
+    if not provider and not clear_all:
+        click.echo("Error: Must specify --provider or --all", err=True)
+        return
+
+    try:
+        from src.utils.model_cache import ModelCacheManager
+
+        cache_manager = ModelCacheManager()
+
+        if clear_all:
+            cache_manager.clear_cache()
+            click.echo("✓ Cleared cache for all providers")
+        else:
+            cache_manager.clear_cache(provider)
+            click.echo(f"✓ Cleared cache for {provider}")
+
+    except Exception as e:
+        click.echo(f"Error clearing cache: {e}", err=True)
+
+
+@cli.command()
+@click.pass_context
+def cache_info(ctx: click.Context) -> None:
+    """Show cache information."""
+
+    try:
+        from src.utils.model_cache import ModelCacheManager
+
+        cache_manager = ModelCacheManager()
+
+        cached_providers = cache_manager.list_cached_providers()
+
+        if not cached_providers:
+            click.echo("No cached model data available")
+            return
+
+        click.echo("Cached model data:")
+        for provider in cached_providers:
+            click.echo(f"  • {provider}")
+
+    except Exception as e:
+        click.echo(f"Error getting cache info: {e}", err=True)
+
+
+@cli.command()
 @click.option('--provider', '-p', help='Vector database provider')
 @click.pass_context
 def list_collections(ctx: click.Context, provider: Optional[str]) -> None:

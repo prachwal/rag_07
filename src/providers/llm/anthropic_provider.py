@@ -8,6 +8,13 @@ from typing import Any, Dict, List, Optional
 import aiohttp
 
 from src.exceptions import APIError, LLMProviderError
+from src.models.model_info import (
+    ModelCapabilities,
+    ModelInfo,
+    ModelListResponse,
+    ModelPricing,
+)
+from src.utils.model_cache import ModelCacheManager
 
 from ..base import LLMProvider
 
@@ -134,3 +141,126 @@ class AnthropicProvider(LLMProvider):
             'Anthropic does not support embeddings. '
             'Use OpenAI or Google providers for embeddings.'
         )
+
+    async def list_models(self, use_cache: bool = True) -> ModelListResponse:
+        """List available models from Anthropic API."""
+        cache_manager = ModelCacheManager()
+
+        # Try to get cached models first if use_cache is True
+        if use_cache:
+            cached_response = cache_manager.get_cached_models('anthropic')
+            if cached_response:
+                return cached_response
+
+        try:
+            headers = {
+                'x-api-key': self.api_key,
+                'content-type': 'application/json',
+                'anthropic-version': '2023-06-01',
+            }
+
+            timeout = aiohttp.ClientTimeout(total=self.timeout)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                url = f"{self.base_url}/v1/models"
+                async with session.get(url, headers=headers) as response:
+                    if response.status != 200:
+                        error_text = await response.text()
+                        raise APIError(
+                            f'Anthropic API error: {error_text}', provider='anthropic'
+                        )
+
+                    data = await response.json()
+                    models = []
+
+                    for model_data in data.get('data', []):
+                        model_id = model_data.get('id', '')
+                        display_name = model_data.get('display_name', model_id)
+
+                        # Determine capabilities based on model name
+                        capabilities = [ModelCapabilities.TEXT_GENERATION]
+                        multimodal = False
+                        supports_tools = True  # Most Claude models support
+
+                        if 'vision' in model_id.lower():
+                            capabilities.append(ModelCapabilities.VISION)
+                            multimodal = True
+
+                        if supports_tools:
+                            capabilities.extend(
+                                [
+                                    ModelCapabilities.TOOLS,
+                                    ModelCapabilities.FUNCTION_CALLING,
+                                ]
+                            )
+
+                        # Estimate context length based on model name
+                        max_tokens = None
+                        if 'claude-3' in model_id:
+                            max_tokens = 200000  # 200k context
+                        elif 'claude-2' in model_id:
+                            max_tokens = 100000  # 100k context
+
+                        # Add pricing information for known models
+                        pricing = None
+                        if 'claude-3-haiku' in model_id:
+                            pricing = ModelPricing(
+                                input_price_per_million=0.25,
+                                output_price_per_million=1.25,
+                                currency="USD",
+                            )
+                        elif (
+                            'claude-3.5-sonnet' in model_id
+                            or 'claude-3-sonnet' in model_id
+                        ):
+                            pricing = ModelPricing(
+                                input_price_per_million=3.0,
+                                output_price_per_million=15.0,
+                                currency="USD",
+                            )
+                        elif 'claude-3-opus' in model_id:
+                            pricing = ModelPricing(
+                                input_price_per_million=15.0,
+                                output_price_per_million=75.0,
+                                currency="USD",
+                            )
+
+                        model_info = ModelInfo(
+                            id=model_id,
+                            name=display_name,
+                            provider='anthropic',
+                            description=f"Anthropic {display_name} model",
+                            max_tokens=max_tokens,
+                            capabilities=capabilities,
+                            multimodal=multimodal,
+                            supports_tools=supports_tools,
+                            supports_streaming=True,
+                            created_at=model_data.get('created_at'),
+                            updated_at=None,
+                            deprecated=False,
+                            pricing=pricing,
+                        )
+                        models.append(model_info)
+
+                    response_obj = ModelListResponse(
+                        provider='anthropic', models=models, total_count=len(models)
+                    )
+
+                    # Cache the response
+                    cache_manager.cache_models(response_obj)
+
+                    self.logger.info(
+                        "Fetched Anthropic models",
+                        extra={
+                            "operation": "fetched_anthropic_models",
+                            "count": len(models),
+                        },
+                    )
+
+                    return response_obj
+
+        except aiohttp.ClientError as e:
+            raise APIError(
+                f'Anthropic request failed: {e}', provider='anthropic'
+            ) from e
+        except Exception as e:
+            raise LLMProviderError(f'Failed to list Anthropic models: {e}') from e

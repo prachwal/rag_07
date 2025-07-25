@@ -8,6 +8,14 @@ from typing import Any, List, Optional
 import aiohttp
 
 from src.exceptions import APIError, LLMProviderError
+from src.models.model_info import (
+    ModelCapabilities,
+    ModelInfo,
+    ModelListResponse,
+    ModelPricing,
+)
+from src.utils.model_cache import ModelCacheManager
+
 from ..base import LLMProvider
 
 
@@ -159,3 +167,95 @@ class OllamaProvider(LLMProvider):
         )
 
         return embeddings
+
+    async def list_models(self, use_cache: bool = True) -> ModelListResponse:
+        """List available Ollama models with detailed information."""
+        cache_manager = ModelCacheManager()
+
+        # Try to get from cache first
+        if use_cache:
+            cached_response = cache_manager.get_cached_models('ollama')
+            if cached_response:
+                return cached_response
+
+        try:
+            # Fetch models from Ollama API
+            url = f"{self.base_url}/api/tags"
+
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    if response.status != 200:
+                        error_data = await response.text()
+                        raise APIError(f'Ollama API error: {error_data}')
+
+                    data = await response.json()
+
+            # Process model data
+            models = []
+            for model_data in data.get('models', []):
+                model_id = model_data.get('name', '')
+
+                if not model_id:
+                    continue
+
+                # Parse model info
+                size_bytes = model_data.get('size', 0)
+                size_gb = round(size_bytes / (1024**3), 1) if size_bytes else 0
+
+                # Determine capabilities based on model name
+                capabilities = [ModelCapabilities.TEXT_GENERATION]
+                supports_tools = False
+                multimodal = False
+                max_tokens = None
+
+                # Check for specific model types
+                model_lower = model_id.lower()
+                if 'embed' in model_lower:
+                    capabilities = [ModelCapabilities.EMBEDDINGS]
+                elif any(x in model_lower for x in ['llama', 'mistral', 'phi']):
+                    supports_tools = True
+                    max_tokens = 4096  # Default context for most models
+                    capabilities.append(ModelCapabilities.TOOLS)
+
+                if 'vision' in model_id.lower() or 'llava' in model_id.lower():
+                    multimodal = True
+                    capabilities.append(ModelCapabilities.VISION)
+
+                model_info = ModelInfo(
+                    id=model_id,
+                    name=model_id,
+                    provider='ollama',
+                    description=f"Ollama local model ({size_gb}GB)",
+                    max_tokens=max_tokens,
+                    capabilities=capabilities,
+                    pricing=ModelPricing(
+                        input_price_per_million=0.0,  # Local models are free
+                        output_price_per_million=0.0,
+                    ),
+                    multimodal=multimodal,
+                    supports_tools=supports_tools,
+                    supports_streaming=True,
+                    created_at=model_data.get('modified_at'),
+                    updated_at=model_data.get('modified_at'),
+                    deprecated=False,
+                )
+                models.append(model_info)
+
+            # Sort models by name
+            models.sort(key=lambda x: x.id)
+
+            response = ModelListResponse(
+                provider='ollama', models=models, total_count=len(models), cached=False
+            )
+
+            # Cache the response
+            cache_manager.cache_models(response)
+
+            self.log_operation('fetched_ollama_models', count=len(models))
+
+            return response
+
+        except Exception as e:
+            self.log_error(e, 'failed_to_fetch_ollama_models')
+            # Return fallback from config
+            return await super().list_models(use_cache=False)

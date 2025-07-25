@@ -1,12 +1,26 @@
 ---
 applyTo: '**'
 ---
+
 # PYTHON PROJECT INSTRUKCJE DLA AI
 
 - Punkt wejściowy: src/main.py (tylko uruchamianie, brak logiki)
 - Struktura katalogów:
   - src/cli.py – obsługa CLI
-  - src/services/ – logika biznesowa (każdy plik = 1 odpowiedzialność)
+- src/services/ – logika biznesowa (każdy plik = 1 odpowiedzialność, czysta warstwa serwisowa, bez logiki providerów)
+- **WARSTWA SERVICES (np. ApplicationService):**
+  - Każda metoda asynchroniczna (`async def`), obsługuje tylko orkiestrację i walidację.
+  - Walidacja wejścia (np. raise ValidationError dla pustych stringów).
+  - Tworzenie providerów wyłącznie przez ProviderFactory.
+  - Cleanup providerów zawsze w bloku `finally` (await ...cleanup()).
+  - Logowanie operacji przez dedykowany logger (np. self.log_operation()).
+  - Brak logiki providerów – tylko delegacja i agregacja wyników.
+  - Typowanie wszystkich argumentów i zwracanych wartości (adnotacje typów, Optional, List[str] itp.).
+  - Każda metoda ma docstring opisujący działanie.
+  - Nazwy argumentów i domyślne wartości spójne z resztą kodu (np. collection='default', limit=5).
+  - RAG: budowanie promptu z kontekstem, wywołanie LLM, logowanie szczegółów.
+  - Usuwanie nieużywanych importów i fragmentów kodu.
+  - Plik zaczyna się krótkim opisem (max 3 linie).
   - src/utils/ – funkcje pomocnicze (np. logger.py)
   - src/models/ – modele danych
   - src/exceptions.py – dedykowane wyjątki
@@ -32,7 +46,8 @@ applyTo: '**'
 - Foldery `examples/` i `databases/` są ignorowane przez git (przechowują przykłady i lokalne bazy)
 - setup.sh – instaluje zależności z requirements.txt (lub poetry/pdm install)
 - Pliki mają pojedynczą odpowiedzialność, brak logiki w main/cli
-- Testy muszą pokrywać całość logiki + mocking zewnętrznych API
+  - Testy muszą pokrywać całość logiki + mocking zewnętrznych API
+  - Testy warstwy services sprawdzają tylko orkiestrację i obsługę błędów (nie logikę providerów)
 - **WARUNKI COMMITU**:
   - WSZYSTKIE testy muszą przechodzić (100% success rate)
   - Test coverage minimum 85%

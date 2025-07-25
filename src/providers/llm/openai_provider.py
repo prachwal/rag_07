@@ -8,6 +8,14 @@ from typing import Any, Dict, List, Optional
 import aiohttp
 
 from src.exceptions import APIError, LLMProviderError
+from src.models.model_info import (
+    ModelCapabilities,
+    ModelInfo,
+    ModelListResponse,
+    ModelPricing,
+)
+from src.utils.model_cache import ModelCacheManager
+
 from ..base import LLMProvider
 
 
@@ -152,3 +160,119 @@ class OpenAIProvider(LLMProvider):
             embedding = await self.generate_embedding(text, model)
             embeddings.append(embedding)
         return embeddings
+
+    async def list_models(self, use_cache: bool = True) -> ModelListResponse:
+        """List available OpenAI models with detailed information."""
+        cache_manager = ModelCacheManager()
+
+        # Try to get from cache first
+        if use_cache:
+            cached_response = cache_manager.get_cached_models('openai')
+            if cached_response:
+                return cached_response
+
+        try:
+            # Fetch models from OpenAI API
+            url = f"{self.base_url}/models"
+            headers = {'Authorization': f'Bearer {self.api_key}'}
+
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers) as response:
+                    if response.status != 200:
+                        error_data = await response.json()
+                        error_msg = error_data.get('error', {}).get(
+                            'message', 'Unknown error'
+                        )
+                        raise APIError(f'OpenAI API error: {error_msg}')
+
+                    data = await response.json()
+
+            # Process model data
+            models = []
+            for model_data in data.get('data', []):
+                model_id = model_data.get('id', '')
+
+                # Skip if not a valid model
+                if not model_id or 'ft:' in model_id:
+                    continue
+
+                # Determine capabilities based on model name
+                capabilities = [ModelCapabilities.TEXT_GENERATION]
+                supports_tools = False
+                multimodal = False
+                max_tokens = None
+                pricing = None
+
+                # Set model-specific attributes
+                if any(x in model_id for x in ['gpt-4', 'gpt-3.5']):
+                    supports_tools = True
+                    if 'gpt-4' in model_id:
+                        if 'vision' in model_id or 'gpt-4o' in model_id:
+                            multimodal = True
+                            capabilities.append(ModelCapabilities.VISION)
+                        if 'turbo' in model_id:
+                            max_tokens = 128000
+                        else:
+                            max_tokens = 8192
+                        # GPT-4 pricing (approximate)
+                        if 'gpt-4o' in model_id:
+                            pricing = ModelPricing(
+                                input_price_per_million=5.0,
+                                output_price_per_million=15.0,
+                            )
+                        else:
+                            pricing = ModelPricing(
+                                input_price_per_million=30.0,
+                                output_price_per_million=60.0,
+                            )
+                    else:  # gpt-3.5
+                        max_tokens = 16385
+                        pricing = ModelPricing(
+                            input_price_per_million=0.5, output_price_per_million=1.5
+                        )
+
+                    capabilities.append(ModelCapabilities.TOOLS)
+                    capabilities.append(ModelCapabilities.FUNCTION_CALLING)
+
+                elif 'text-embedding' in model_id:
+                    capabilities = [ModelCapabilities.EMBEDDINGS]
+                    if 'ada-002' in model_id:
+                        pricing = ModelPricing(
+                            input_price_per_million=0.1, output_price_per_million=0.0
+                        )
+
+                model_info = ModelInfo(
+                    id=model_id,
+                    name=model_data.get('id', model_id),
+                    provider='openai',
+                    description=f"OpenAI {model_id} model",
+                    max_tokens=max_tokens,
+                    capabilities=capabilities,
+                    pricing=pricing,
+                    multimodal=multimodal,
+                    supports_tools=supports_tools,
+                    supports_streaming=True,
+                    created_at=None,
+                    updated_at=None,
+                    deprecated=False,
+                )
+                models.append(model_info)
+
+            # Sort models by name for consistency
+            models.sort(key=lambda x: x.id)
+
+            response = ModelListResponse(
+                provider='openai', models=models, total_count=len(models), cached=False
+            )
+
+            # Cache the response
+            cache_manager.cache_models(response)
+
+            self.log_operation('fetched_openai_models', count=len(models))
+
+            return response
+
+        except Exception as e:
+            self.log_error(e, 'failed_to_fetch_openai_models')
+            # Return fallback from config
+            return await super().list_models(use_cache=False)

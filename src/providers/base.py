@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from src.config.config_manager import ConfigManager
 from src.exceptions import ProviderError
+from src.models.model_info import ModelListResponse
 from src.utils.logger import LoggerMixin
 
 T = TypeVar('T', bound='BaseProvider')
@@ -61,6 +62,30 @@ class LLMProvider(BaseProvider):
         """Generate embedding vector for single text."""
         results = await self.generate_embeddings([text], model)
         return results[0] if results else []
+
+    async def list_models(self, use_cache: bool = True) -> ModelListResponse:
+        """List available models for this provider."""
+        # Default implementation - should be overridden by specific providers
+        from src.models.model_info import ModelInfo
+
+        # Get models from config
+        config_models = self.config.get('available_models', [])
+        models = []
+
+        for model_id in config_models:
+            provider_name = self.__class__.__name__.replace('Provider', '')
+            model_info = ModelInfo(
+                id=model_id, name=model_id, provider=provider_name.lower()
+            )
+            models.append(model_info)
+
+        provider_name = self.__class__.__name__.replace('Provider', '')
+        return ModelListResponse(
+            provider=provider_name.lower(),
+            models=models,
+            total_count=len(models),
+            cached=False,
+        )
 
 
 class VectorDBProvider(BaseProvider):

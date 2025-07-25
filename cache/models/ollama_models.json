@@ -1,0 +1,159 @@
+{
+  "provider": "ollama",
+  "models": [
+    {
+      "id": "llama2:7b",
+      "name": "llama2:7b",
+      "provider": "ollama",
+      "description": "Ollama local model (3.6GB)",
+      "max_tokens": 4096,
+      "capabilities": [
+        "text_generation",
+        "tools"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": "2025-07-23T19:36:12.736376247+02:00",
+      "updated_at": "2025-07-23T19:36:12.736376247+02:00",
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.0,
+        "output_price_per_million": 0.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "llama3.2:3b",
+      "name": "llama3.2:3b",
+      "provider": "ollama",
+      "description": "Ollama local model (1.9GB)",
+      "max_tokens": 4096,
+      "capabilities": [
+        "text_generation",
+        "tools"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": "2025-07-23T20:57:25.500884595+02:00",
+      "updated_at": "2025-07-23T20:57:25.500884595+02:00",
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.0,
+        "output_price_per_million": 0.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "llama3.2:latest",
+      "name": "llama3.2:latest",
+      "provider": "ollama",
+      "description": "Ollama local model (1.9GB)",
+      "max_tokens": 4096,
+      "capabilities": [
+        "text_generation",
+        "tools"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": "2025-07-22T22:16:17.755864246+02:00",
+      "updated_at": "2025-07-22T22:16:17.755864246+02:00",
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.0,
+        "output_price_per_million": 0.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "nomic-embed-text:latest",
+      "name": "nomic-embed-text:latest",
+      "provider": "ollama",
+      "description": "Ollama local model (0.3GB)",
+      "max_tokens": null,
+      "capabilities": [
+        "embeddings"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": "2025-07-23T19:05:34.47831801+02:00",
+      "updated_at": "2025-07-23T19:05:34.47831801+02:00",
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.0,
+        "output_price_per_million": 0.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "phi3:medium",
+      "name": "phi3:medium",
+      "provider": "ollama",
+      "description": "Ollama local model (7.4GB)",
+      "max_tokens": 4096,
+      "capabilities": [
+        "text_generation",
+        "tools"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": "2025-07-23T20:59:00.568885532+02:00",
+      "updated_at": "2025-07-23T20:59:00.568885532+02:00",
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.0,
+        "output_price_per_million": 0.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "phi3:mini",
+      "name": "phi3:mini",
+      "provider": "ollama",
+      "description": "Ollama local model (2.0GB)",
+      "max_tokens": 4096,
+      "capabilities": [
+        "text_generation",
+        "tools"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": "2025-07-22T22:13:18.427860112+02:00",
+      "updated_at": "2025-07-22T22:13:18.427860112+02:00",
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.0,
+        "output_price_per_million": 0.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "qwen2:0.5b",
+      "name": "qwen2:0.5b",
+      "provider": "ollama",
+      "description": "Ollama local model (0.3GB)",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": "2025-07-22T18:21:37.140234187+02:00",
+      "updated_at": "2025-07-22T18:21:37.140234187+02:00",
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.0,
+        "output_price_per_million": 0.0,
+        "currency": "USD"
+      }
+    }
+  ],
+  "total_count": 7,
+  "timestamp": "2025-07-25T17:02:58.793219"
+}

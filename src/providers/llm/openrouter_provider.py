@@ -8,6 +8,14 @@ from typing import Any, Dict, List, Optional
 import aiohttp
 
 from src.exceptions import APIError, LLMProviderError
+from src.models.model_info import (
+    ModelCapabilities,
+    ModelInfo,
+    ModelListResponse,
+    ModelPricing,
+)
+from src.utils.model_cache import ModelCacheManager
+
 from ..base import LLMProvider
 
 
@@ -201,3 +209,119 @@ class OpenRouterProvider(LLMProvider):
         )
 
         return embeddings
+
+    async def list_models(self, use_cache: bool = True) -> ModelListResponse:
+        """List available OpenRouter models with detailed information."""
+        cache_manager = ModelCacheManager()
+
+        # Try to get from cache first
+        if use_cache:
+            cached_response = cache_manager.get_cached_models('openrouter')
+            if cached_response:
+                return cached_response
+
+        try:
+            # Fetch models from OpenRouter API
+            url = f"{self.base_url}/models"
+            headers = {
+                'Authorization': f'Bearer {self.api_key}',
+                'HTTP-Referer': 'http://localhost:8000',
+                'X-Title': 'RAG_07',
+            }
+
+            async with aiohttp.ClientSession() as session:
+                timeout = aiohttp.ClientTimeout(total=30)
+                async with session.get(
+                    url, headers=headers, timeout=timeout
+                ) as response:
+                    if response.status != 200:
+                        error_data = await response.json()
+                        error_msg = error_data.get('error', {}).get(
+                            'message', 'Unknown error'
+                        )
+                        raise APIError(f'OpenRouter API error: {error_msg}')
+
+                    data = await response.json()
+
+            # Process model data
+            models = []
+            for model_data in data.get('data', []):
+                model_id = model_data.get('id', '')
+
+                if not model_id:
+                    continue
+
+                # Parse pricing information
+                pricing = None
+                if 'pricing' in model_data:
+                    pricing_data = model_data['pricing']
+                    prompt_price = pricing_data.get('prompt')
+                    completion_price = pricing_data.get('completion')
+
+                    # Convert from per-token to per-million tokens
+                    if prompt_price and completion_price:
+                        inp_price = float(prompt_price) * 1000000
+                        out_price = float(completion_price) * 1000000
+                        pricing = ModelPricing(
+                            input_price_per_million=inp_price,
+                            output_price_per_million=out_price,
+                        )
+
+                # Determine capabilities based on model name/description
+                capabilities = [ModelCapabilities.TEXT_GENERATION]
+                supports_tools = False
+                multimodal = False
+                max_tokens = model_data.get('context_length')
+
+                # Check for specific capabilities
+                model_lower = model_id.lower()
+                if any(x in model_lower for x in ['gpt-4', 'claude', 'gemini']):
+                    supports_tools = True
+                    capabilities.append(ModelCapabilities.TOOLS)
+                    capabilities.append(ModelCapabilities.FUNCTION_CALLING)
+
+                if any(x in model_lower for x in ['vision', 'gpt-4o', 'claude-3']):
+                    multimodal = True
+                    capabilities.append(ModelCapabilities.VISION)
+
+                # Get description
+                description = model_data.get('description', f"OpenRouter {model_id}")
+
+                model_info = ModelInfo(
+                    id=model_id,
+                    name=model_data.get('name', model_id),
+                    provider='openrouter',
+                    description=description,
+                    max_tokens=max_tokens,
+                    capabilities=capabilities,
+                    pricing=pricing,
+                    multimodal=multimodal,
+                    supports_tools=supports_tools,
+                    supports_streaming=True,
+                    created_at=None,
+                    updated_at=None,
+                    deprecated=False,
+                )
+                models.append(model_info)
+
+            # Sort models by name for consistency
+            models.sort(key=lambda x: x.id)
+
+            response = ModelListResponse(
+                provider='openrouter',
+                models=models,
+                total_count=len(models),
+                cached=False,
+            )
+
+            # Cache the response
+            cache_manager.cache_models(response)
+
+            self.log_operation('fetched_openrouter_models', count=len(models))
+
+            return response
+
+        except Exception as e:
+            self.log_error(e, 'failed_to_fetch_openrouter_models')
+            # Return fallback from config
+            return await super().list_models(use_cache=False)

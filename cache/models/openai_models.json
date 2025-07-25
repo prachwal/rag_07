@@ -1,0 +1,1553 @@
+{
+  "provider": "openai",
+  "models": [
+    {
+      "id": "babbage-002",
+      "name": "babbage-002",
+      "provider": "openai",
+      "description": "OpenAI babbage-002 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "chatgpt-4o-latest",
+      "name": "chatgpt-4o-latest",
+      "provider": "openai",
+      "description": "OpenAI chatgpt-4o-latest model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "codex-mini-latest",
+      "name": "codex-mini-latest",
+      "provider": "openai",
+      "description": "OpenAI codex-mini-latest model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "dall-e-2",
+      "name": "dall-e-2",
+      "provider": "openai",
+      "description": "OpenAI dall-e-2 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "dall-e-3",
+      "name": "dall-e-3",
+      "provider": "openai",
+      "description": "OpenAI dall-e-3 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "davinci-002",
+      "name": "davinci-002",
+      "provider": "openai",
+      "description": "OpenAI davinci-002 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "gpt-3.5-turbo",
+      "name": "gpt-3.5-turbo",
+      "provider": "openai",
+      "description": "OpenAI gpt-3.5-turbo model",
+      "max_tokens": 16385,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.5,
+        "output_price_per_million": 1.5,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-3.5-turbo-0125",
+      "name": "gpt-3.5-turbo-0125",
+      "provider": "openai",
+      "description": "OpenAI gpt-3.5-turbo-0125 model",
+      "max_tokens": 16385,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.5,
+        "output_price_per_million": 1.5,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-3.5-turbo-1106",
+      "name": "gpt-3.5-turbo-1106",
+      "provider": "openai",
+      "description": "OpenAI gpt-3.5-turbo-1106 model",
+      "max_tokens": 16385,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.5,
+        "output_price_per_million": 1.5,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-3.5-turbo-16k",
+      "name": "gpt-3.5-turbo-16k",
+      "provider": "openai",
+      "description": "OpenAI gpt-3.5-turbo-16k model",
+      "max_tokens": 16385,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.5,
+        "output_price_per_million": 1.5,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-3.5-turbo-instruct",
+      "name": "gpt-3.5-turbo-instruct",
+      "provider": "openai",
+      "description": "OpenAI gpt-3.5-turbo-instruct model",
+      "max_tokens": 16385,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.5,
+        "output_price_per_million": 1.5,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-3.5-turbo-instruct-0914",
+      "name": "gpt-3.5-turbo-instruct-0914",
+      "provider": "openai",
+      "description": "OpenAI gpt-3.5-turbo-instruct-0914 model",
+      "max_tokens": 16385,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.5,
+        "output_price_per_million": 1.5,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4",
+      "name": "gpt-4",
+      "provider": "openai",
+      "description": "OpenAI gpt-4 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4-0125-preview",
+      "name": "gpt-4-0125-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4-0125-preview model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4-0613",
+      "name": "gpt-4-0613",
+      "provider": "openai",
+      "description": "OpenAI gpt-4-0613 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4-1106-preview",
+      "name": "gpt-4-1106-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4-1106-preview model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4-turbo",
+      "name": "gpt-4-turbo",
+      "provider": "openai",
+      "description": "OpenAI gpt-4-turbo model",
+      "max_tokens": 128000,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4-turbo-2024-04-09",
+      "name": "gpt-4-turbo-2024-04-09",
+      "provider": "openai",
+      "description": "OpenAI gpt-4-turbo-2024-04-09 model",
+      "max_tokens": 128000,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4-turbo-preview",
+      "name": "gpt-4-turbo-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4-turbo-preview model",
+      "max_tokens": 128000,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4.1",
+      "name": "gpt-4.1",
+      "provider": "openai",
+      "description": "OpenAI gpt-4.1 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4.1-2025-04-14",
+      "name": "gpt-4.1-2025-04-14",
+      "provider": "openai",
+      "description": "OpenAI gpt-4.1-2025-04-14 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4.1-mini",
+      "name": "gpt-4.1-mini",
+      "provider": "openai",
+      "description": "OpenAI gpt-4.1-mini model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4.1-mini-2025-04-14",
+      "name": "gpt-4.1-mini-2025-04-14",
+      "provider": "openai",
+      "description": "OpenAI gpt-4.1-mini-2025-04-14 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4.1-nano",
+      "name": "gpt-4.1-nano",
+      "provider": "openai",
+      "description": "OpenAI gpt-4.1-nano model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4.1-nano-2025-04-14",
+      "name": "gpt-4.1-nano-2025-04-14",
+      "provider": "openai",
+      "description": "OpenAI gpt-4.1-nano-2025-04-14 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": false,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 30.0,
+        "output_price_per_million": 60.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o",
+      "name": "gpt-4o",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-2024-05-13",
+      "name": "gpt-4o-2024-05-13",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-2024-05-13 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-2024-08-06",
+      "name": "gpt-4o-2024-08-06",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-2024-08-06 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-2024-11-20",
+      "name": "gpt-4o-2024-11-20",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-2024-11-20 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-audio-preview",
+      "name": "gpt-4o-audio-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-audio-preview model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-audio-preview-2024-10-01",
+      "name": "gpt-4o-audio-preview-2024-10-01",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-audio-preview-2024-10-01 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-audio-preview-2024-12-17",
+      "name": "gpt-4o-audio-preview-2024-12-17",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-audio-preview-2024-12-17 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-audio-preview-2025-06-03",
+      "name": "gpt-4o-audio-preview-2025-06-03",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-audio-preview-2025-06-03 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini",
+      "name": "gpt-4o-mini",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-2024-07-18",
+      "name": "gpt-4o-mini-2024-07-18",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-2024-07-18 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-audio-preview",
+      "name": "gpt-4o-mini-audio-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-audio-preview model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-audio-preview-2024-12-17",
+      "name": "gpt-4o-mini-audio-preview-2024-12-17",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-audio-preview-2024-12-17 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-realtime-preview",
+      "name": "gpt-4o-mini-realtime-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-realtime-preview model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-realtime-preview-2024-12-17",
+      "name": "gpt-4o-mini-realtime-preview-2024-12-17",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-realtime-preview-2024-12-17 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-search-preview",
+      "name": "gpt-4o-mini-search-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-search-preview model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-search-preview-2025-03-11",
+      "name": "gpt-4o-mini-search-preview-2025-03-11",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-search-preview-2025-03-11 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-transcribe",
+      "name": "gpt-4o-mini-transcribe",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-transcribe model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-mini-tts",
+      "name": "gpt-4o-mini-tts",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-mini-tts model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-realtime-preview",
+      "name": "gpt-4o-realtime-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-realtime-preview model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-realtime-preview-2024-10-01",
+      "name": "gpt-4o-realtime-preview-2024-10-01",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-realtime-preview-2024-10-01 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-realtime-preview-2024-12-17",
+      "name": "gpt-4o-realtime-preview-2024-12-17",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-realtime-preview-2024-12-17 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-realtime-preview-2025-06-03",
+      "name": "gpt-4o-realtime-preview-2025-06-03",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-realtime-preview-2025-06-03 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-search-preview",
+      "name": "gpt-4o-search-preview",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-search-preview model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-search-preview-2025-03-11",
+      "name": "gpt-4o-search-preview-2025-03-11",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-search-preview-2025-03-11 model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-4o-transcribe",
+      "name": "gpt-4o-transcribe",
+      "provider": "openai",
+      "description": "OpenAI gpt-4o-transcribe model",
+      "max_tokens": 8192,
+      "capabilities": [
+        "text_generation",
+        "vision",
+        "tools",
+        "function_calling"
+      ],
+      "multimodal": true,
+      "supports_tools": true,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 5.0,
+        "output_price_per_million": 15.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "gpt-image-1",
+      "name": "gpt-image-1",
+      "provider": "openai",
+      "description": "OpenAI gpt-image-1 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o1",
+      "name": "o1",
+      "provider": "openai",
+      "description": "OpenAI o1 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o1-2024-12-17",
+      "name": "o1-2024-12-17",
+      "provider": "openai",
+      "description": "OpenAI o1-2024-12-17 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o1-mini",
+      "name": "o1-mini",
+      "provider": "openai",
+      "description": "OpenAI o1-mini model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o1-mini-2024-09-12",
+      "name": "o1-mini-2024-09-12",
+      "provider": "openai",
+      "description": "OpenAI o1-mini-2024-09-12 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o1-preview",
+      "name": "o1-preview",
+      "provider": "openai",
+      "description": "OpenAI o1-preview model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o1-preview-2024-09-12",
+      "name": "o1-preview-2024-09-12",
+      "provider": "openai",
+      "description": "OpenAI o1-preview-2024-09-12 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o1-pro",
+      "name": "o1-pro",
+      "provider": "openai",
+      "description": "OpenAI o1-pro model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o1-pro-2025-03-19",
+      "name": "o1-pro-2025-03-19",
+      "provider": "openai",
+      "description": "OpenAI o1-pro-2025-03-19 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o3-mini",
+      "name": "o3-mini",
+      "provider": "openai",
+      "description": "OpenAI o3-mini model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o3-mini-2025-01-31",
+      "name": "o3-mini-2025-01-31",
+      "provider": "openai",
+      "description": "OpenAI o3-mini-2025-01-31 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o4-mini",
+      "name": "o4-mini",
+      "provider": "openai",
+      "description": "OpenAI o4-mini model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o4-mini-2025-04-16",
+      "name": "o4-mini-2025-04-16",
+      "provider": "openai",
+      "description": "OpenAI o4-mini-2025-04-16 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o4-mini-deep-research",
+      "name": "o4-mini-deep-research",
+      "provider": "openai",
+      "description": "OpenAI o4-mini-deep-research model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "o4-mini-deep-research-2025-06-26",
+      "name": "o4-mini-deep-research-2025-06-26",
+      "provider": "openai",
+      "description": "OpenAI o4-mini-deep-research-2025-06-26 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "omni-moderation-2024-09-26",
+      "name": "omni-moderation-2024-09-26",
+      "provider": "openai",
+      "description": "OpenAI omni-moderation-2024-09-26 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "omni-moderation-latest",
+      "name": "omni-moderation-latest",
+      "provider": "openai",
+      "description": "OpenAI omni-moderation-latest model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "text-embedding-3-large",
+      "name": "text-embedding-3-large",
+      "provider": "openai",
+      "description": "OpenAI text-embedding-3-large model",
+      "max_tokens": null,
+      "capabilities": [
+        "embeddings"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "text-embedding-3-small",
+      "name": "text-embedding-3-small",
+      "provider": "openai",
+      "description": "OpenAI text-embedding-3-small model",
+      "max_tokens": null,
+      "capabilities": [
+        "embeddings"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "text-embedding-ada-002",
+      "name": "text-embedding-ada-002",
+      "provider": "openai",
+      "description": "OpenAI text-embedding-ada-002 model",
+      "max_tokens": null,
+      "capabilities": [
+        "embeddings"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false,
+      "pricing": {
+        "input_price_per_million": 0.1,
+        "output_price_per_million": 0.0,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "tts-1",
+      "name": "tts-1",
+      "provider": "openai",
+      "description": "OpenAI tts-1 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "tts-1-1106",
+      "name": "tts-1-1106",
+      "provider": "openai",
+      "description": "OpenAI tts-1-1106 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "tts-1-hd",
+      "name": "tts-1-hd",
+      "provider": "openai",
+      "description": "OpenAI tts-1-hd model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "tts-1-hd-1106",
+      "name": "tts-1-hd-1106",
+      "provider": "openai",
+      "description": "OpenAI tts-1-hd-1106 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    },
+    {
+      "id": "whisper-1",
+      "name": "whisper-1",
+      "provider": "openai",
+      "description": "OpenAI whisper-1 model",
+      "max_tokens": null,
+      "capabilities": [
+        "text_generation"
+      ],
+      "multimodal": false,
+      "supports_tools": false,
+      "supports_streaming": true,
+      "created_at": null,
+      "updated_at": null,
+      "deprecated": false
+    }
+  ],
+  "total_count": 75,
+  "timestamp": "2025-07-25T17:00:48.422041"
+}
