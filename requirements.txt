@@ -1,0 +1,30 @@
+# Core dependencies
+click>=8.1.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+structlog>=23.1.0
+
+# HTTP clients
+aiohttp>=3.8.0
+httpx>=0.24.0
+
+# Vector databases
+faiss-cpu>=1.7.4
+numpy>=1.24.0
+
+# Development dependencies
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+black>=23.0.0
+isort>=5.12.0
+pylint>=2.17.0
+mypy>=1.5.0
+ruff>=0.0.280
+
+# Optional dependencies for specific providers
+# Uncomment as needed:
+# openai>=1.0.0
+# anthropic>=0.3.0
+# chromadb>=0.4.0
+# pinecone-client>=2.2.0

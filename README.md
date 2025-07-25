@@ -1,114 +1,262 @@
-# RAG_07 - Projekt z konfiguracją formatowania kodu
+# RAG_07 - Multi-provider LLM Application with RAG Support
 
-## Skonfigurowane narzędzia formatowania
+**Uniwersalna baza aplikacji command line** dla systemów LLM z obsługą RAG (Retrieval-Augmented Generation), wieloma providerami i bazami wektorowymi.
+
+## 🚀 Funkcjonalności
+
+- **Multi-provider LLM**: OpenAI, Anthropic, Google (łatwe dodawanie nowych)
+- **Vector Databases**: FAISS, Chroma, Pinecone (extensible architecture)
+- **RAG System**: Retrieval-Augmented Generation z automatycznym chunkowaniem tekstu
+- **Command Line Interface**: Intuitive CLI z pełną obsługą argumentów
+- **Async Architecture**: Wszystkie operacje asynchroniczne z retry/timeout
+- **Structured Logging**: JSON logging z pełnym śledzeniem operacji
+- **Configuration Management**: Centralized config z .env i JSON/YAML
+- **Type Safety**: Pełne typowanie z mypy validation
+- **Testing**: Comprehensive test suite z mockowaniem API
+
+## 📁 Struktura projektu (zgodnie z instrukcjami)
+
+```
+src/
+├── main.py                 # Punkt wejściowy (tylko uruchamianie)
+├── cli.py                  # Obsługa CLI
+├── exceptions.py           # Dedykowane wyjątki
+├── services/              # Logika biznesowa
+│   └── application_service.py
+├── utils/                 # Funkcje pomocnicze
+│   └── logger.py          # Structured logging
+├── models/                # Modele danych
+├── providers/             # Adaptery dla różnych API
+│   ├── base.py           # Base interfaces + Factory
+│   ├── llm/              # LLM providers
+│   │   └── openai_provider.py
+│   ├── vector/           # Vector DB providers
+│   │   └── faiss_provider.py
+│   └── text/             # Text processors
+│       └── basic_processor.py
+└── config/               # Konfiguracje
+    └── config_manager.py  # Centralized config management
+
+tests/                    # Testy jednostkowe
+examples/                 # Przykładowe dane (gitignored)
+databases/               # Lokalne bazy danych (gitignored)
+config/                  # Pliki konfiguracyjne
+```
+
+## 🛠 Skonfigurowane narzędzia formatowania
 
 ### Python
 - **Black** - formatter kodu Python (line-length: 88)
 - **isort** - sortowanie importów zgodnie z profilem Black
 - **Pylint** - linting kodu Python
 - **mypy** - sprawdzanie typów (opcjonalnie)
+- **Ruff** - bardzo szybki linter/formatter
 
 ### TypeScript/JavaScript
 - **Prettier** - formatter kodu JS/TS
 - **ESLint** - linting z regułami TypeScript
 - **TypeScript** - kompilator i sprawdzanie typów
 
-## Konfiguracja VS Code
+## ⚡ Szybki start
 
-### Automatyczne formatowanie
-Wszystkie pliki są automatycznie formatowane przy zapisie (Format on Save).
+### 1. Setup środowiska
+```bash
+# Uruchom setup script
+./setup.sh
 
-### Zainstalowane rozszerzenia
-```vscode-extensions
-ms-python.python,ms-python.vscode-pylance,ms-python.black-formatter,ms-python.isort,ms-python.pylint,esbenp.prettier-vscode,dbaeumer.vscode-eslint,ms-toolsai.jupyter
+# Lub ręcznie:
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-## Pliki konfiguracyjne
+### 2. Konfiguracja
+```bash
+# Edytuj .env z kluczami API
+cp .env .env.local
+# Dodaj swoje klucze API do .env.local
+```
 
-- `.vscode/settings.json` - ustawienia VS Code dla projektu
-- `.prettierrc` - konfiguracja Prettier
-- `.eslintrc.json` - konfiguracja ESLint
-- `pyproject.toml` - konfiguracja narzędzi Python (Black, isort, pylint, mypy)
-- `tsconfig.json` - konfiguracja TypeScript
-- `.editorconfig` - ustawienia edytora dla spójności
+### 3. Pierwsza komenda
+```bash
+# Sprawdź status konfiguracji
+python src/main.py config-status
 
-## Użycie
+# Pokaż pomoc
+python src/main.py --help
+```
+
+## 📋 Dostępne komendy CLI
+
+### Podstawowe operacje
+```bash
+# Query do LLM
+python src/main.py query "What is Python?"
+python src/main.py query -p openai -m gpt-4 "Explain machine learning"
+
+# Dodaj tekst do vector store
+python src/main.py embed "Python is a programming language"
+python src/main.py embed -p faiss -col documents "Your text here"
+
+# Wyszukaj w vector store
+python src/main.py search "programming language"
+python src/main.py search -p faiss -col documents -l 10 "machine learning"
+
+# RAG query (z kontekstem)
+python src/main.py rag "What is Python used for?"
+python src/main.py rag -p openai -vp faiss -cl 5 "Explain AI"
+```
+
+### Zarządzanie
+```bash
+# Status konfiguracji
+python src/main.py config-status
+
+# Lista dostępnych providerów
+python src/main.py list-providers
+python src/main.py list-providers --provider-type llm
+```
+
+## 🧪 Automatyczne formatowanie VS Code
+
+### VS Code Tasks (Ctrl+Shift+P → "Tasks: Run Task")
+- **Setup Environment** - uruchamia setup.sh
+- **Format All** - isort + black
+- **Lint (Pylint)** - sprawdzanie kodu
+- **Type Check (MyPy)** - sprawdzanie typów
+- **Run Tests** - pytest z coverage
+- **Run Application** - uruchamia aplikację z --help
 
 ### Ręczne formatowanie
 ```bash
 # Python
-npm run python:format      # Formatowanie Black
-npm run python:isort       # Sortowanie importów
-npm run python:format-all  # Oba powyższe
+source .venv/bin/activate
+black src/              # Formatowanie Black
+isort src/              # Sortowanie importów
+pylint src/             # Linting
+mypy src/               # Type checking
+pytest                  # Testy
 
-# JavaScript/TypeScript
-npm run format             # Formatowanie Prettier
-
-# Wszystko
-npm run format:all         # Formatowanie Python + JS/TS
+# JavaScript/TypeScript (jeśli używasz)
+npm run format          # Formatowanie Prettier
+npm run lint            # ESLint z automatycznymi poprawkami
 ```
 
-### Ręczny linting
+## 🔧 Dodawanie nowych providerów
+
+### 1. LLM Provider
+```python
+# src/providers/llm/my_provider.py
+from providers.base import LLMProvider
+
+class MyProvider(LLMProvider):
+    async def initialize(self) -> None:
+        # Inicjalizacja
+
+    async def generate_text(self, prompt: str, **kwargs) -> str:
+        # Implementacja
+```
+
+### 2. Rejestracja w Factory
+```python
+# Automatyczna rejestracja w providers/base.py
+# Dodaj import w _register_default_providers()
+```
+
+### 3. Konfiguracja
+```json
+// config/app_config.json
+{
+  "llm_providers": [
+    {
+      "name": "my_provider",
+      "api_key_env": "MY_PROVIDER_API_KEY",
+      "base_url": "https://api.myprovider.com",
+      "default_model": "my-model",
+      "available_models": ["my-model", "my-model-pro"]
+    }
+  ]
+}
+```
+
+## 🔐 Zmienne środowiskowe (.env)
+
 ```bash
-# Python
-npm run python:lint        # Pylint
+# LLM API Keys
+OPENAI_API_KEY=your_openai_key_here
+ANTHROPIC_API_KEY=your_anthropic_key_here
+GOOGLE_API_KEY=your_google_key_here
 
-# JavaScript/TypeScript
-npm run lint               # ESLint z automatycznymi poprawkami
-npm run lint:check         # ESLint tylko sprawdzanie
+# Application Settings
+LOG_LEVEL=INFO
+DEBUG=false
+APP_NAME=rag_07
 
-# Wszystko
-npm run lint:all           # Linting Python + JS/TS
+# Database Settings
+DATABASE_PATH=databases/local.db
+VECTOR_DB_PATH=databases/vector_store
+
+# Provider Settings
+DEFAULT_LLM_PROVIDER=openai
+DEFAULT_VECTOR_DB_PROVIDER=faiss
 ```
 
-### Sprawdzanie typów
+## 🧪 Testowanie
+
 ```bash
-npm run type-check         # TypeScript type checking
+# Uruchom wszystkie testy
+pytest
+
+# Z coverage
+pytest --cov=src --cov-report=html
+
+# Konkretny test
+pytest tests/test_config_manager.py -v
+
+# Test asynchroniczny
+pytest tests/test_text_processor.py::TestBasicTextProcessor::test_chunk_text
 ```
 
-## Reguły formatowania
+## 📊 Wzorce projektowe zastosowane
 
-### Python (Black + isort)
-- Długość linii: 88 znaków
-- Single quotes dla stringów
-- Importy sortowane zgodnie z profilem Black
-- Automatyczne usuwanie nieużywanych importów
+- **Factory Pattern**: `ProviderFactory` dla tworzenia providerów
+- **Strategy Pattern**: Wymienne algorytmy dla różnych providerów
+- **Adapter Pattern**: Unified interface dla różnych API
+- **Singleton Pattern**: `ConfigManager` jako centralny punkt konfiguracji
+- **Template Method**: `BaseProvider` z wspólną strukturą
+- **Dependency Injection**: Providers wstrzykiwane przez Factory
 
-### JavaScript/TypeScript (Prettier + ESLint)
-- Długość linii: 80 znaków
-- Single quotes
-- Średniki obowiązkowe
-- Trailing commas (ES5)
-- Tab width: 2 spacje
+## 🎯 Cele architektoniczne
 
-## Struktura katalogów (zalecana)
+1. **Single Responsibility**: Każdy plik = jedna odpowiedzialność
+2. **Elastyczność**: Łatwe dodawanie nowych providerów do arrays
+3. **Centralizacja config**: Tylko ConfigManager czyta .env
+4. **Async/await**: Wszystkie operacje API asynchroniczne
+5. **Error Handling**: Dedicated exceptions + retry/timeout
+6. **Observability**: Structured logging każdej operacji
+7. **Type Safety**: Pełne typowanie + mypy validation
 
+## 🚨 Ważne uwagi
+
+- Foldery `examples/` i `databases/` są w .gitignore
+- Tylko `ConfigManager` czyta .env, pozostałe otrzymują gotową konfigurację
+- Każdy provider ma jednolity interfejs + jasną dokumentację parametrów
+- Brak logiki w main.py/cli.py - tylko routing do services
+- Testy pokrywają całość + mockowanie zewnętrznych API
+
+## 🤝 Contributing
+
+1. Dodaj testy dla nowej funkcjonalności
+2. Uruchom `black src/ && isort src/` przed commitem
+3. Sprawdź `pylint src/` i `mypy src/`
+4. Dokumentuj parametry wejściowe providerów
+5. Używaj structured logging w każdej operacji
+
+## 📝 Zainstalowane rozszerzenia VS Code
+```vscode-extensions
+ms-python.python,ms-python.vscode-pylance,ms-python.black-formatter,ms-python.isort,ms-python.pylint,esbenp.prettier-vscode,dbaeumer.vscode-eslint,ms-toolsai.jupyter,github.copilot
 ```
-src/
-├── components/          # Komponenty UI (.tsx) - TYLKO prezentacja
-├── services/           # Logika biznesowa (.ts) - API, operacje
-├── hooks/              # Custom hooks (.ts) - logika stanu
-├── utils/              # Funkcje pomocnicze (.ts) - pure functions
-├── types/              # Definicje typów TypeScript
-└── assets/             # Zasoby statyczne
-```
 
-## Automatyzacja w VS Code
+---
 
-- **Format on Save** - automatyczne formatowanie przy zapisie
-- **Fix on Save** - automatyczne poprawki ESLint przy zapisie
-- **Organize Imports** - automatyczne sortowanie importów przy zapisie
-- **Trim Whitespace** - usuwanie zbędnych spacji
-- **Insert Final Newline** - dodawanie pustej linii na końcu pliku
-
-## Integracja z Git
-
-Pliki `.gitignore` i `.prettierignore` są skonfigurowane dla projektu mieszanego Python + TypeScript/JavaScript.
-
-## Customizacja
-
-Aby dostosować reguły formatowania:
-
-1. **Python**: Edytuj sekcje `[tool.black]`, `[tool.isort]`, `[tool.pylint]` w `pyproject.toml`
-2. **JavaScript/TypeScript**: Edytuj `.prettierrc` i `.eslintrc.json`
-3. **VS Code**: Edytuj `.vscode/settings.json`
+✨ **Aplikacja gotowa do użycia i rozwijania!** ✨

@@ -1,3 +1,61 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag_07"
+version = "0.1.0"
+description = "Multi-provider LLM application with RAG and vector database support"
+authors = [
+    {name = "RAG_07 Team", email = "team@rag07.dev"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "click>=8.1.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "structlog>=23.1.0",
+    "aiohttp>=3.8.0",
+    "httpx>=0.24.0",
+    "faiss-cpu>=1.7.4",
+    "numpy>=1.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "pylint>=2.17.0",
+    "mypy>=1.5.0",
+    "ruff>=0.0.280",
+]
+llm = [
+    "openai>=1.0.0",
+    "anthropic>=0.3.0",
+]
+vectordb = [
+    "chromadb>=0.4.0",
+    "pinecone-client>=2.2.0",
+]
+
+[project.scripts]
+rag07 = "src.main:main"
+
 [tool.black]
 line-length = 88
 target-version = ['py38', 'py39', 'py310', 'py311']
@@ -17,6 +75,8 @@ extend-exclude = '''
   | buck-out
   | build
   | dist
+  | examples
+  | databases
 )/
 '''
 
@@ -95,6 +155,6 @@ exclude_lines = [
     "raise NotImplementedError",
     "if 0:",
     "if __name__ == .__main__.:",
-    "class .*\bProtocol\):",
-    "@(abc\.)?abstractmethod",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
 ]

@@ -1,0 +1,89 @@
+{
+  "_comment": "Configuration for RAG_07 application. When editing, only modify specific values needed - do not delete entire sections.",
+  "app_name": "rag_07",
+  "debug": false,
+  "log_level": "INFO",
+  "default_llm_provider": "openai",
+  "default_vector_provider": "faiss",
+  "default_text_processor": "basic",
+  "database_settings": {
+    "database_path": "databases/local.db",
+    "vector_db_path": "databases/vector_store"
+  },
+  "llm_providers": [
+    {
+      "name": "openai",
+      "api_key_env": "OPENAI_API_KEY",
+      "base_url": "https://api.openai.com/v1",
+      "default_model": "gpt-3.5-turbo",
+      "available_models": [
+        "gpt-3.5-turbo",
+        "gpt-4",
+        "gpt-4-turbo"
+      ],
+      "timeout": 30,
+      "max_retries": 3
+    },
+    {
+      "name": "anthropic",
+      "api_key_env": "ANTHROPIC_API_KEY",
+      "base_url": "https://api.anthropic.com",
+      "default_model": "claude-3-sonnet-20240229",
+      "available_models": [
+        "claude-3-haiku-20240307",
+        "claude-3-sonnet-20240229",
+        "claude-3-opus-20240229"
+      ],
+      "timeout": 30,
+      "max_retries": 3
+    },
+    {
+      "name": "google",
+      "api_key_env": "GOOGLE_API_KEY",
+      "base_url": "https://generativelanguage.googleapis.com/v1beta",
+      "default_model": "gemini-pro",
+      "available_models": [
+        "gemini-pro",
+        "gemini-pro-vision"
+      ],
+      "timeout": 30,
+      "max_retries": 3
+    },
+    {
+      "name": "openrouter",
+      "api_key_env": "OPENROUT_API_KEY",
+      "base_url": "https://openrouter.ai/api/v1",
+      "default_model": "anthropic/claude-3-sonnet",
+      "available_models": [
+        "anthropic/claude-3-sonnet",
+        "anthropic/claude-3-haiku",
+        "openai/gpt-4-turbo",
+        "openai/gpt-3.5-turbo"
+      ],
+      "timeout": 30,
+      "max_retries": 3
+    }
+  ],
+  "vector_providers": [
+    {
+      "name": "faiss",
+      "storage_path": "databases/faiss_index",
+      "default_collection": "default",
+      "dimension": 1536
+    },
+    {
+      "name": "chroma",
+      "storage_path": "databases/chroma_db",
+      "default_collection": "default",
+      "dimension": 1536
+    }
+  ],
+  "text_processors": [
+    {
+      "name": "basic",
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "separator": "\n\n"
+    }
+  ]
+}

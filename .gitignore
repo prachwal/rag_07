@@ -108,3 +108,5 @@ dmypy.json
 
 # ===== MISC =====
 .git-blame-ignore-revs
+examples
+databases

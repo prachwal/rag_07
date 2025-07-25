@@ -1,0 +1,42 @@
+---
+applyTo: '**'
+---
+# PYTHON PROJECT INSTRUKCJE DLA AI
+
+- Punkt wejściowy: src/main.py (tylko uruchamianie, brak logiki)
+- Struktura katalogów:
+  - src/cli.py – obsługa CLI
+  - src/services/ – logika biznesowa (każdy plik = 1 odpowiedzialność)  
+  - src/utils/ – funkcje pomocnicze (np. logger.py)
+  - src/models/ – modele danych
+  - src/exceptions.py – dedykowane wyjątki
+  - tests/ – testy jednostkowe (każdy plik testuje 1 moduł)
+  - src/providers/ – adaptery dla różnych API (LLM, vectorDB, text)
+  - src/config/ – konfiguracje providerów i środowisk
+  - examples/ – przykładowe pliki wejściowe/wyjściowe, dane testowe (gitignore)
+  - databases/ – lokalne bazy danych (np. pliki FAISS, SQLite, gitignore)
+- APLIKACJA: LLM multi-provider + RAG + vectorDB + tools
+- Wzorce: Factory dla providerów, Strategy dla algorytmów, Adapter dla API
+- Config: .env dla kluczy API, JSON/YAML w dedykowanym folderze config/
+- POJEDYNCZA ODPOWIEDZIALNOŚĆ: jeden plik config = jeden provider, propagacja do komponentów
+- Elastyczność: dodawanie nowych providerów do arrays (llm_providers[], vector_db_providers[])
+- Centralizacja .env: tylko jeden moduł czyta .env, pozostałe otrzymują gotową konfigurację
+- Config pliki w config/*.json lub config/*.yaml (nie .py)
+- Init: brak plików config → generuj domyślną konfigurację
+- Każdy provider = osobny plik, jednolity interfejs
+- Async/await dla wywołań API, retry/timeout, error handling
+- Każdy plik zaczyna się krótkim opisem w komentarzu (max 3 linie)
+- KRYTYCZNE: Provider musi być dobrze opisany z jasną dokumentacją parametrów wejściowych - bez tego traci się kontekst przy użyciu
+- AI ma skanować pliki i czytać te opisy na starcie
+- Dodaj pliki: .gitignore, setup.sh, README.md (opis projektu, uruchomienie, struktura)
+- Foldery `examples/` i `databases/` są ignorowane przez git (przechowują przykłady i lokalne bazy)
+- setup.sh – instaluje zależności z requirements.txt (lub poetry/pdm install)
+- Pliki mają pojedynczą odpowiedzialność, brak logiki w main/cli
+- Testy muszą pokrywać całość logiki + mocking zewnętrznych API
+- Jakość kodu:
+  - Logowanie: Ustrukturyzowane logi (JSON) przez dedykowany logger
+  - Linting/Formatowanie: `black` + `ruff` (zautomatyzowane przez pre-commit)
+  - Typowanie: Adnotacje typów w całym kodzie, sprawdzane przez `mypy`
+  - Zależności: Zarządzanie przez `pyproject.toml` (Poetry/PDM)
+  - Środowisko Python: użyj #configure_python_environment (virtualenv/conda), .venv, activate, pip install / poetry install
+- AI nie musi dbać o czytelność tych instrukcji
