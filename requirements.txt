@@ -8,6 +8,11 @@ structlog>=23.1.0
 aiohttp>=3.8.0
 httpx>=0.24.0
 
+# Web framework dependencies
+fastapi>=0.104.0
+uvicorn>=0.24.0
+streamlit>=1.28.0
+
 # Vector databases
 faiss-cpu>=1.7.4
 numpy>=1.24.0
@@ -21,6 +26,11 @@ isort>=5.12.0
 pylint>=2.17.0
 mypy>=1.5.0
 ruff>=0.0.280
+
+# Testing web components
+httpx>=0.24.0
+pytest-mock>=3.11.0
+fastapi[all]>=0.104.0
 
 # Optional dependencies for specific providers
 # Uncomment as needed:

@@ -1,25 +1,41 @@
 # RAG_07 - Multi-provider LLM Application with RAG Support
 
-**Uniwersalna baza aplikacji command line** dla systemów LLM z obsługą RAG
+**Uniwersalna aplikacja LLM z interfejsem web** dla systemów RAG
 (Retrieval-Augmented Generation), wieloma providerami i bazami wektorowymi.
 
 ## 🚀 Funkcjonalności
 
-- **Multi-provider LLM**: OpenAI, Anthropic, Google (łatwe dodawanie nowych)
+- **Multi-provider LLM**: OpenAI, Anthropic, Google, Ollama, OpenRouter, LM Studio
 - **Vector Databases**: FAISS, Chroma, Pinecone (extensible architecture)
 - **RAG System**: Retrieval-Augmented Generation z automatycznym chunkowaniem
-  tekstu
 - **Function Calling**: Zaawansowane iteracyjne odpytywanie z LLM
-- **Collection Management**: Zarządzanie kolekcjami wektorowymi z automatyczną
-  indeksacją
+- **Web Interface**:
+  - 🎨 **Streamlit Dashboard** - Interaktywny interfejs użytkownika
+  - 📡 **FastAPI Backend** - RESTful API z dokumentacją
+  - 🐳 **Docker Support** - Production-ready deployment
+- **Collection Management**: Zarządzanie kolekcjami wektorowymi
 - **Command Line Interface**: Intuitive CLI z pełną obsługą argumentów
 - **Async Architecture**: Wszystkie operacje asynchroniczne z retry/timeout
-- **Advanced Logging System**: JSON structured logging z rotacją plików,
-  elastyczną konfiguracją poziomów i hierarchią priorytetów (CLI > ENV >
-  config > default)
+- **Advanced Logging System**: JSON structured logging z rotacją plików
 - **Configuration Management**: Centralized config z .env i JSON/YAML
 - **Type Safety**: Pełne typowanie z mypy validation
 - **Testing**: Comprehensive test suite z mockowaniem API
+
+## 🌐 Web Interface
+
+### Quick Start
+```bash
+# Uruchom cały system web
+./run_web_system.sh
+
+# Lub z Docker
+./docker_start.sh
+```
+
+### Dostęp do aplikacji
+- 🎨 **Streamlit Dashboard**: http://localhost:8501
+- 📡 **FastAPI Backend**: http://localhost:8000
+- 📋 **API Documentation**: http://localhost:8000/docs
 
 ## 📁 Struktura projektu (zgodnie z instrukcjami)
 
@@ -28,6 +44,10 @@ src/
 ├── main.py                 # Punkt wejściowy (tylko uruchamianie)
 ├── cli.py                  # Obsługa CLI
 ├── exceptions.py           # Dedykowane wyjątki
+├── web/                   # Web interface
+│   ├── api_server.py      # FastAPI backend
+│   ├── streamlit_app.py   # Streamlit frontend
+│   └── models.py          # Pydantic models dla API
 ├── services/              # Logika biznesowa
 │   └── application_service.py
 ├── utils/                 # Funkcje pomocnicze
@@ -44,10 +64,11 @@ src/
 └── config/               # Konfiguracje
     └── config_manager.py  # Centralized config management
 
-tests/                    # Testy jednostkowe
+tests/                    # Testy jednostkowe (CLI + Web)
 examples/                 # Przykładowe dane (gitignored)
 databases/               # Lokalne bazy danych (gitignored)
 config/                  # Pliki konfiguracyjne
+docker/                  # Docker configuration
 ```
 
 ## 🛠 Skonfigurowane narzędzia formatowania
@@ -68,33 +89,51 @@ config/                  # Pliki konfiguracyjne
 
 ## ⚡ Szybki start
 
-### 1. Setup środowiska
+### Option 1: Web Interface (Recommended)
 
 ```bash
-# Uruchom setup script
+# 1. Setup środowiska
 ./setup.sh
 
-# Lub ręcznie:
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+# 2. Konfiguracja API keys
+cp .env .env.local
+# Edytuj .env.local ze swoimi kluczami API
+
+# 3. Uruchom web system
+./run_web_system.sh
 ```
 
-### 2. Konfiguracja
+Dostęp do aplikacji:
+- **Dashboard**: http://localhost:8501
+- **API**: http://localhost:8000
+- **Documentation**: http://localhost:8000/docs
+
+### Option 2: Docker Deployment
 
 ```bash
-# Edytuj .env z kluczami API
+# 1. Konfiguracja
+cp .env .env.local
+# Edytuj .env.local
+
+# 2. Start z Docker
+./docker_start.sh
+
+# 3. Production z nginx
+./docker_start.sh --production
+```
+
+### Option 3: Command Line
+
+```bash
+# 1. Setup środowiska
+./setup.sh
+
+# 2. Konfiguracja
 cp .env .env.local
 # Dodaj swoje klucze API do .env.local
-```
 
-### 3. Pierwsza komenda
-
-```bash
-# Sprawdź status konfiguracji
+# 3. Pierwsza komenda
 python src/main.py config-status
-
-# Pokaż pomoc
 python src/main.py --help
 ```
 

@@ -153,6 +153,7 @@ class ApplicationService(LoggerMixin):
         self,
         question: str,
         llm_provider: Optional[str] = None,
+        llm_model: Optional[str] = None,
         vector_provider: Optional[str] = None,
         collection: Optional[str] = None,
         context_limit: int = 3,
@@ -187,7 +188,9 @@ Answer:"""
 Answer:"""
 
         # Generate answer
-        answer = await self.process_query(query=prompt, provider=llm_provider)
+        answer = await self.process_query(
+            query=prompt, provider=llm_provider, model=llm_model
+        )
 
         self.log_operation(
             'rag_query_completed',
@@ -202,6 +205,7 @@ Answer:"""
         self,
         question: str,
         llm_provider: Optional[str] = None,
+        llm_model: Optional[str] = None,
         vector_provider: Optional[str] = None,
         collection: Optional[str] = None,
         use_function_calling: bool = True,
@@ -229,6 +233,7 @@ Answer:"""
             return await fc_service.process_question_with_tools(
                 question=question,
                 llm_provider_name=llm_provider,
+                llm_model_name=llm_model,
                 vector_provider_name=vector_provider,
                 collection=collection,
                 max_iterations=max_iterations,
@@ -238,6 +243,7 @@ Answer:"""
             answer = await self.rag_query(
                 question=question,
                 llm_provider=llm_provider,
+                llm_model=llm_model,
                 vector_provider=vector_provider,
                 collection=collection,
             )

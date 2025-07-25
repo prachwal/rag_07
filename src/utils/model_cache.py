@@ -189,3 +189,64 @@ class ModelCacheManager(LoggerMixin):
             if self._is_cache_valid(cache_file):
                 providers.append(provider_name)
         return providers
+
+    def get_all_cached_models(self) -> dict[str, list[str]]:
+        """Get all cached models organized by provider, filtered for RAG compatibility."""
+        result = {}
+        for provider in self.list_cached_providers():
+            models_response = self.get_cached_models(provider)
+            if models_response and models_response.models:
+                # Filter models for RAG compatibility
+                compatible_models = []
+                for model in models_response.models:
+                    # Skip deprecated models
+                    if model.deprecated:
+                        continue
+
+                    # For RAG operations, prefer models with function calling
+                    # but also include basic text generation models
+                    has_function_calling = model.supports_tools or any(
+                        'function_calling' in str(cap).lower()
+                        for cap in model.capabilities
+                    )
+
+                    has_text_generation = any(
+                        'text_generation' in str(cap).lower()
+                        for cap in model.capabilities
+                    )
+
+                    # Include if it has text generation capabilities
+                    # Prioritize models with function calling for better RAG
+                    if has_text_generation:
+                        # Check token limit - prefer models with sufficient context
+                        min_tokens = 2000  # Minimum for basic RAG
+                        if model.max_tokens is None or model.max_tokens >= min_tokens:
+                            compatible_models.append(model.id)
+                        elif model.max_tokens and model.max_tokens >= 1000:
+                            # Include smaller models but mark them
+                            compatible_models.append(f"{model.id} (limited context)")
+
+                # Sort models: function calling first, then by name
+                def sort_key(model_id):
+                    # Find the original model for sorting
+                    original_model = next(
+                        (
+                            m
+                            for m in models_response.models
+                            if m.id == model_id.split(' ')[0]
+                        ),
+                        None,
+                    )
+                    if original_model:
+                        has_fc = original_model.supports_tools or any(
+                            'function_calling' in str(cap).lower()
+                            for cap in original_model.capabilities
+                        )
+                        return (0 if has_fc else 1, model_id)
+                    return (2, model_id)
+
+                compatible_models.sort(key=sort_key)
+
+                if compatible_models:
+                    result[provider] = compatible_models
+        return result

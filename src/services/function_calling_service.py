@@ -30,6 +30,7 @@ class FunctionCallingService(LoggerMixin):
         self,
         question: str,
         llm_provider_name: Optional[str] = None,
+        llm_model_name: Optional[str] = None,
         vector_provider_name: Optional[str] = None,
         collection: Optional[str] = None,
         max_iterations: int = 5,
@@ -74,7 +75,7 @@ class FunctionCallingService(LoggerMixin):
                 )
                 # Fallback to traditional RAG
                 return await self._fallback_to_traditional_rag(
-                    question, llm_provider, vector_provider, collection
+                    question, llm_provider, vector_provider, collection, llm_model_name
                 )
 
             # Setup tools
@@ -105,6 +106,7 @@ class FunctionCallingService(LoggerMixin):
                     functions=tools.get_function_definitions(),
                     function_call="auto",
                     temperature=0.1,
+                    model=llm_model_name,
                 )
 
                 message = response["choices"][0]["message"]
@@ -248,6 +250,7 @@ Guidelines:
         llm_provider: LLMProvider,
         vector_provider: VectorDBProvider,
         collection: Optional[str],
+        llm_model_name: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Fallback to traditional RAG when function calling not supported.
 
@@ -274,6 +277,7 @@ Guidelines:
         answer = await app_service.rag_query(
             question=question,
             llm_provider=llm_provider_name,
+            llm_model=llm_model_name,
             vector_provider=vector_provider_name,
             collection=collection,
         )
