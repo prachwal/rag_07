@@ -161,6 +161,66 @@ class OpenAIProvider(LLMProvider):
             embeddings.append(embedding)
         return embeddings
 
+    async def chat_completion_with_functions(
+        self,
+        messages: List[Dict[str, Any]],
+        functions: List[Dict[str, Any]],
+        function_call: str = "auto",
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """Generate chat completion with function calling support."""
+        if not await self.health_check():
+            raise LLMProviderError('OpenAI provider is not healthy')
+
+        model = kwargs.get('model', self.default_model)
+
+        # Build payload for OpenAI API
+        payload = {
+            'model': model,
+            'messages': messages,
+            'temperature': kwargs.get('temperature', 0.1),
+            'max_tokens': kwargs.get('max_tokens', 2000),
+        }
+
+        # Add functions and function_call if provided
+        if functions:
+            payload['functions'] = functions
+            payload['function_call'] = function_call
+
+        try:
+            url = f'{self.base_url}/chat/completions'
+            async with self.session.post(url, json=payload) as response:
+                if response.status != 200:
+                    error_text = await response.text()
+                    raise APIError(
+                        f'OpenAI API error: {error_text}',
+                        status_code=response.status,
+                        provider='openai',
+                    )
+
+                data = await response.json()
+
+                self.log_operation(
+                    'chat_completion_with_functions',
+                    model=model,
+                    messages_count=len(messages),
+                    functions_count=len(functions),
+                    function_call=function_call,
+                )
+
+                return data
+
+        except aiohttp.ClientError as e:
+            raise APIError(f'OpenAI request failed: {e}', provider='openai') from e
+        except KeyError as e:
+            raise LLMProviderError(f'Invalid OpenAI response format: {e}') from e
+
+    def supports_function_calling(self) -> bool:
+        """Check if provider supports function calling."""
+        # OpenAI GPT models support function calling
+        function_calling_models = ['gpt-4', 'gpt-3.5-turbo']
+        return any(model in self.default_model for model in function_calling_models)
+
     async def list_models(self, use_cache: bool = True) -> ModelListResponse:
         """List available OpenAI models with detailed information."""
         cache_manager = ModelCacheManager()

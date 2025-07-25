@@ -1,14 +1,9 @@
 """
-Afrom typing import Any, Dict, List, Optional
-
-from src.config.config_manager import ConfigManager
-from src.exceptions import ApplicationError
-from src.providers.base import ProviderFactory
-from src.utils.logger import LoggerMixintion service layer for RAG_07.
+Application service layer for RAG_07.
 Orchestrates operations between providers and handles business logic.
 """
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from src.config.config_manager import ConfigManager
 from src.exceptions import ValidationError
@@ -202,3 +197,59 @@ Answer:"""
         )
 
         return answer
+
+    async def advanced_rag_query(
+        self,
+        question: str,
+        llm_provider: Optional[str] = None,
+        vector_provider: Optional[str] = None,
+        collection: Optional[str] = None,
+        use_function_calling: bool = True,
+        max_iterations: int = 5,
+    ) -> Dict[str, Any]:
+        """Advanced RAG with optional function calling.
+
+        Args:
+            question: User question
+            llm_provider: LLM provider name (optional)
+            vector_provider: Vector provider name (optional)
+            collection: Collection name (optional)
+            use_function_calling: Whether to use function calling
+                (default: True)
+            max_iterations: Maximum function calling iterations
+
+        Returns:
+            Dictionary with answer and metadata
+        """
+        if use_function_calling:
+            # Use function calling service
+            from src.services.function_calling_service import FunctionCallingService
+
+            fc_service = FunctionCallingService(self.config_manager)
+            return await fc_service.process_question_with_tools(
+                question=question,
+                llm_provider_name=llm_provider,
+                vector_provider_name=vector_provider,
+                collection=collection,
+                max_iterations=max_iterations,
+            )
+        else:
+            # Use traditional RAG
+            answer = await self.rag_query(
+                question=question,
+                llm_provider=llm_provider,
+                vector_provider=vector_provider,
+                collection=collection,
+            )
+
+            return {
+                "answer": answer,
+                "function_calls": [],
+                "conversation_history": [],
+                "iterations_used": 1,
+                "sources_used": [],
+                "metadata": {
+                    "traditional_rag_used": True,
+                    "function_calling_used": False,
+                },
+            }

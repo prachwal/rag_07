@@ -142,6 +142,150 @@ class AnthropicProvider(LLMProvider):
             'Use OpenAI or Google providers for embeddings.'
         )
 
+    async def chat_completion_with_functions(
+        self,
+        messages: List[Dict[str, Any]],
+        functions: List[Dict[str, Any]],
+        function_call: str = "auto",
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """Generate chat completion with function calling support.
+
+        Note: Anthropic uses "tools" instead of "functions".
+        This method converts OpenAI-style functions to Anthropic tools.
+        """
+        if not await self.health_check():
+            raise LLMProviderError('Anthropic provider is not healthy')
+
+        model = kwargs.get('model', self.default_model)
+
+        # Convert OpenAI-style functions to Anthropic tools
+        tools = []
+        for func in functions:
+            tool = {
+                "name": func["name"],
+                "description": func["description"],
+                "input_schema": func["parameters"],
+            }
+            tools.append(tool)
+
+        # Convert messages format
+        anthropic_messages = []
+        system_message = None
+
+        for msg in messages:
+            if msg["role"] == "system":
+                system_message = msg["content"]
+            elif msg["role"] == "function":
+                # Convert function result to tool result
+                anthropic_messages.append(
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "tool_result",
+                                "tool_use_id": msg.get("name", "unknown"),
+                                "content": msg["content"],
+                            }
+                        ],
+                    }
+                )
+            else:
+                anthropic_messages.append(
+                    {"role": msg["role"], "content": msg["content"]}
+                )
+
+        # Build payload
+        payload = {
+            "model": model,
+            "messages": anthropic_messages,
+            "tools": tools,
+            "max_tokens": kwargs.get('max_tokens', 2000),
+            "temperature": kwargs.get('temperature', 0.1),
+        }
+
+        if system_message:
+            payload["system"] = system_message
+
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": self.api_key,
+            "anthropic-version": "2023-06-01",
+        }
+
+        try:
+            timeout = aiohttp.ClientTimeout(total=self.timeout)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                url = f"{self.base_url}/v1/messages"
+                async with session.post(url, json=payload, headers=headers) as response:
+                    response_data = await response.json()
+
+                    if response.status != 200:
+                        error_msg = response_data.get('error', {})
+                        error_msg = error_msg.get('message', 'Unknown error')
+                        raise APIError(
+                            f'Anthropic API error: {error_msg}',
+                            provider='anthropic',
+                        )
+
+                    # Convert Anthropic response to OpenAI format
+                    content = response_data.get('content', [])
+                    if not content:
+                        raise LLMProviderError('No content in Anthropic response')
+
+                    # Build OpenAI-compatible response
+                    message = {"role": "assistant", "content": None}
+
+                    # Handle text content
+                    text_content = []
+                    tool_calls = []
+
+                    for item in content:
+                        if item.get('type') == 'text':
+                            text_content.append(item.get('text', ''))
+                        elif item.get('type') == 'tool_use':
+                            # Convert to OpenAI function call format
+                            tool_calls.append(
+                                {
+                                    "name": item.get('name'),
+                                    "arguments": item.get('input', {}),
+                                }
+                            )
+
+                    if text_content:
+                        message["content"] = '\n'.join(text_content)
+
+                    if tool_calls and len(tool_calls) > 0:
+                        # Use first tool call (Anthropic can return multiple)
+                        message["function_call"] = tool_calls[0]
+
+                    self.log_operation(
+                        'chat_completion_with_functions',
+                        model=model,
+                        messages_count=len(messages),
+                        tools_count=len(tools),
+                    )
+
+                    return {"choices": [{"message": message}]}
+
+        except aiohttp.ClientError as e:
+            raise APIError(
+                f'Anthropic request failed: {e}', provider='anthropic'
+            ) from e
+        except KeyError as e:
+            raise LLMProviderError(f'Invalid Anthropic response format: {e}') from e
+
+    def supports_function_calling(self) -> bool:
+        """Check if provider supports function calling."""
+        # Claude 3 models support tool use (function calling)
+        claude_3_models = [
+            'claude-3-opus',
+            'claude-3-sonnet',
+            'claude-3-haiku',
+            'claude-3-5-sonnet',
+        ]
+        return any(model in self.default_model for model in claude_3_models)
+
     async def list_models(self, use_cache: bool = True) -> ModelListResponse:
         """List available models from Anthropic API."""
         cache_manager = ModelCacheManager()

@@ -1,10 +1,11 @@
 """
 Logger utility module for structured logging.
-Provides JSON-structured logging with configurable levels.
+Provides JSON-structured logging with configurable levels and file rotation.
 """
 
 import logging
 import sys
+from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 from typing import Any, Optional
 
@@ -12,9 +13,21 @@ import structlog
 
 
 def setup_logging(
-    level: str = 'INFO', log_file: Optional[Path] = None, json_format: bool = True
+    level: str = 'INFO',
+    log_dir: Optional[Path] = None,
+    json_format: bool = True,
+    console_output: bool = True,
 ) -> None:
-    """Setup structured logging configuration."""
+    """Setup structured logging configuration with file rotation."""
+
+    # Ensure log directory exists
+    if log_dir:
+        log_dir = Path(log_dir)
+        log_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        log_dir = Path("logs")
+        log_dir.mkdir(parents=True, exist_ok=True)
+
     # Configure structlog
     structlog.configure(
         processors=[
@@ -37,13 +50,29 @@ def setup_logging(
         cache_logger_on_first_use=True,
     )
 
-    # Configure standard library logging
-    handlers: list = [logging.StreamHandler(sys.stdout)]
-    if log_file:
-        handlers.append(logging.FileHandler(log_file))
+    # Setup handlers
+    handlers: list = []
 
+    # Console handler (optional)
+    if console_output:
+        console_handler = logging.StreamHandler(sys.stdout)
+        handlers.append(console_handler)
+
+    # File handler with daily rotation (keep 3 days)
+    if log_dir:
+        log_file = log_dir / "rag_07.log"
+        file_handler = TimedRotatingFileHandler(
+            log_file, when='midnight', interval=1, backupCount=3, encoding='utf-8'
+        )
+        file_handler.suffix = "%Y-%m-%d"
+        handlers.append(file_handler)
+
+    # Configure standard library logging
     logging.basicConfig(
-        format='%(message)s', level=getattr(logging, level.upper()), handlers=handlers
+        format='%(message)s',
+        level=getattr(logging, level.upper()),
+        handlers=handlers,
+        force=True,  # Override any existing configuration
     )
 
 
@@ -83,5 +112,32 @@ class LoggerMixin:
         )
 
 
-# Initialize logging on module import
-setup_logging()
+def configure_logging_from_env_and_config(
+    config_manager=None,
+    log_level_override: Optional[str] = None,
+    log_dir_override: Optional[str] = None,
+    console_output: bool = True,
+) -> None:
+    """Configure logging from environment, config and overrides."""
+    import os
+
+    # Priority: override > env > config > default
+    log_level = (
+        log_level_override
+        or os.getenv('LOG_LEVEL')
+        or (config_manager.config.log_level if config_manager else None)
+        or 'INFO'
+    )
+
+    log_dir = log_dir_override or os.getenv('LOG_DIR') or 'logs'
+
+    setup_logging(
+        level=log_level,
+        log_dir=Path(log_dir),
+        json_format=True,
+        console_output=console_output,
+    )
+
+
+# Initialize minimal logging on module import (will be reconfigured later)
+setup_logging(level='WARNING', console_output=False)

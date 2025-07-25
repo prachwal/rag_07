@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional
 import aiohttp
 
 from src.exceptions import APIError, LLMProviderError
+
 from ..base import LLMProvider
 
 
@@ -188,3 +189,46 @@ class GoogleProvider(LLMProvider):
         )
 
         return embeddings
+
+    async def chat_completion_with_functions(
+        self,
+        messages: List[Dict[str, Any]],
+        functions: List[Dict[str, Any]],
+        function_call: str = "auto",
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """Generate chat completion with function calling support.
+
+        Note: Google Gemini has limited function calling support.
+        This is a basic implementation that may need enhancement.
+        """
+        # For now, fallback to regular text generation
+        # This can be enhanced when Google improves function calling
+
+        # Convert conversation to single prompt
+        prompt_parts = []
+        for message in messages:
+            if message["role"] == "system":
+                prompt_parts.append(f"System: {message['content']}")
+            elif message["role"] == "user":
+                prompt_parts.append(f"User: {message['content']}")
+            elif message["role"] == "assistant":
+                prompt_parts.append(f"Assistant: {message['content']}")
+
+        prompt = "\n".join(prompt_parts)
+
+        # Generate response
+        response_text = await self.generate_text(
+            prompt, model=kwargs.get('model'), **kwargs
+        )
+
+        # Return in OpenAI format
+        return {
+            "choices": [{"message": {"role": "assistant", "content": response_text}}]
+        }
+
+    def supports_function_calling(self) -> bool:
+        """Check if provider supports function calling."""
+        # Google Gemini has limited function calling support
+        # For now, return False to use fallback
+        return False

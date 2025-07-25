@@ -1,0 +1,242 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG_07 Python Documentation &mdash; RAG_07 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Core Modules" href="modules/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            RAG_07
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Core Modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">RAG_07</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">RAG_07 Python Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rag-07-python-documentation">
+<h1>RAG_07 Python Documentation<a class="headerlink" href="#rag-07-python-documentation" title="Link to this heading"></a></h1>
+<p>Welcome to the RAG_07 Python codebase documentation.</p>
+</section>
+<section id="about-rag-07">
+<h1>About RAG_07<a class="headerlink" href="#about-rag-07" title="Link to this heading"></a></h1>
+<p>RAG_07 is a comprehensive <strong>Retrieval-Augmented Generation (RAG)</strong> system that combines the power of
+multiple Large Language Models (LLMs) with advanced vector databases to provide intelligent document
+processing and question-answering capabilities.</p>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>🤖 <strong>Multi-Provider LLM Support</strong></dt><dd><ul class="simple">
+<li><p>OpenAI GPT models (GPT-4, GPT-3.5-turbo)</p></li>
+<li><p>Anthropic Claude models (Claude-3.5-Sonnet, Claude-3-Haiku)</p></li>
+<li><p>Google AI models (Gemini Pro, Gemini Flash)</p></li>
+<li><p>Ollama local models</p></li>
+<li><p>OpenRouter model marketplace</p></li>
+<li><p>LM Studio local inference</p></li>
+</ul>
+</dd>
+<dt>🗄️ <strong>Vector Database Integration</strong></dt><dd><ul class="simple">
+<li><p>FAISS for high-performance similarity search</p></li>
+<li><p>Chroma DB for persistent vector storage</p></li>
+<li><p>Automatic embedding generation and caching</p></li>
+</ul>
+</dd>
+<dt>📊 <strong>Model Management System</strong></dt><dd><ul class="simple">
+<li><p>Real-time model availability checking</p></li>
+<li><p>Pricing information and cost estimation</p></li>
+<li><p>Model capabilities assessment (context length, multimodal support)</p></li>
+<li><p>Local caching with TTL for performance optimization</p></li>
+</ul>
+</dd>
+<dt>🔧 <strong>Advanced Configuration</strong></dt><dd><ul class="simple">
+<li><p>Environment-based configuration management</p></li>
+<li><p>Provider-specific settings and API key management</p></li>
+<li><p>Automatic fallback between providers</p></li>
+<li><p>Retry mechanisms and error handling</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="architecture-overview">
+<h2>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Link to this heading"></a></h2>
+<p>The system follows a <strong>layered architecture</strong> with clear separation of concerns:</p>
+<dl class="simple">
+<dt><strong>Service Layer</strong> (<code class="docutils literal notranslate"><span class="pre">src/services/</span></code>)</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ApplicationService</span></code>: Main orchestration and business logic</p></li>
+<li><p>Handles RAG workflows, model selection, and response generation</p></li>
+</ul>
+</dd>
+<dt><strong>Provider Layer</strong> (<code class="docutils literal notranslate"><span class="pre">src/providers/</span></code>)</dt><dd><ul class="simple">
+<li><p><strong>LLM Providers</strong>: Adapters for different AI model APIs</p></li>
+<li><p><strong>Vector Providers</strong>: Database adapters for vector storage and retrieval</p></li>
+<li><p><strong>Text Processors</strong>: Document parsing and preprocessing</p></li>
+</ul>
+</dd>
+<dt><strong>Configuration Layer</strong> (<code class="docutils literal notranslate"><span class="pre">src/config/</span></code>)</dt><dd><ul class="simple">
+<li><p>Environment management and API key handling</p></li>
+<li><p>Provider-specific configuration files</p></li>
+<li><p>Dynamic configuration loading and validation</p></li>
+</ul>
+</dd>
+<dt><strong>Utility Layer</strong> (<code class="docutils literal notranslate"><span class="pre">src/utils/</span></code>)</dt><dd><ul class="simple">
+<li><p>Logging, caching, and helper functions</p></li>
+<li><p>Model information management and caching</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>📚 <strong>Document Analysis</strong></dt><dd><ul class="simple">
+<li><p>Process and analyze large document collections</p></li>
+<li><p>Extract insights and answer questions about content</p></li>
+<li><p>Support for multiple document formats</p></li>
+</ul>
+</dd>
+<dt>🔍 <strong>Intelligent Search</strong></dt><dd><ul class="simple">
+<li><p>Semantic search across document repositories</p></li>
+<li><p>Context-aware query processing</p></li>
+<li><p>Ranked results with relevance scoring</p></li>
+</ul>
+</dd>
+<dt>💬 <strong>Conversational AI</strong></dt><dd><ul class="simple">
+<li><p>Multi-turn conversations with context retention</p></li>
+<li><p>Provider-agnostic chat interfaces</p></li>
+<li><p>Automatic model selection based on query complexity</p></li>
+</ul>
+</dd>
+<dt>📈 <strong>Research Assistant</strong></dt><dd><ul class="simple">
+<li><p>Academic paper analysis and summarization</p></li>
+<li><p>Cross-reference generation and fact-checking</p></li>
+<li><p>Citation management and source tracking</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Installation</strong>: Run <code class="docutils literal notranslate"><span class="pre">./setup.sh</span></code> to install dependencies</p></li>
+<li><p><strong>Configuration</strong>: Set up API keys in <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</p></li>
+<li><p><strong>Basic Usage</strong>: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">src/main.py</span> <span class="pre">query</span> <span class="pre">&quot;Your</span> <span class="pre">question</span> <span class="pre">here&quot;</span></code></p></li>
+<li><p><strong>Model Management</strong>: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">src/main.py</span> <span class="pre">list-models</span> <span class="pre">--provider</span> <span class="pre">openai</span></code></p></li>
+</ol>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Core Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/main.html">Main Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/cli.html">CLI Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#module-overview">Module Overview</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="core-modules">
+<h2>Core Modules<a class="headerlink" href="#core-modules" title="Link to this heading"></a></h2>
+<p>This documentation covers all Python modules in the RAG_07 system.</p>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>Auto-generated API documentation is available in the modules section.</p>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules/index.html" class="btn btn-neutral float-right" title="Core Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, RAG_07 Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

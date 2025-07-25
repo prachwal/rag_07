@@ -9,9 +9,9 @@ from typing import Optional
 
 import click
 
-from src.config.config_manager import ConfigManager
-from src.services.application_service import ApplicationService
-from src.utils.logger import get_logger
+from config.config_manager import ConfigManager
+from services.application_service import ApplicationService
+from utils.logger import configure_logging_from_env_and_config, get_logger
 
 logger = get_logger(__name__)
 
@@ -19,18 +19,60 @@ logger = get_logger(__name__)
 @click.group()
 @click.option('--config', '-c', help='Path to configuration file')
 @click.option('--debug', is_flag=True, help='Enable debug mode')
+@click.option(
+    '--log-level',
+    '-l',
+    type=click.Choice(
+        ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], case_sensitive=False
+    ),
+    help='Set logging level (overrides config and env)',
+)
+@click.option('--log-dir', help='Directory for log files (default: logs/)')
+@click.option(
+    '--log-console/--no-log-console',
+    default=True,
+    help='Enable/disable console logging (default: enabled)',
+)
 @click.pass_context
-def cli(ctx: click.Context, config: Optional[str], debug: bool) -> None:
-    """RAG_07 - Multi-provider LLM application with RAG and vector database support."""
+def cli(
+    ctx: click.Context,
+    config: Optional[str],
+    debug: bool,
+    log_level: Optional[str],
+    log_dir: Optional[str],
+    log_console: bool,
+) -> None:
+    """RAG_07 - Multi-provider LLM application with RAG support."""
     ctx.ensure_object(dict)
 
-    # Initialize configuration
+    # Initialize configuration first
     config_path = Path(config) if config else None
-    ctx.obj['config_manager'] = ConfigManager(config_path)
+    config_manager = ConfigManager(config_path)
+    ctx.obj['config_manager'] = config_manager
     ctx.obj['debug'] = debug
+
+    # Configure logging with all priority levels
+    configure_logging_from_env_and_config(
+        config_manager=config_manager,
+        log_level_override=log_level,
+        log_dir_override=log_dir,
+        console_output=log_console,
+    )
+
+    # Re-initialize logger after configuration
+    global logger
+    logger = get_logger(__name__)
 
     if debug:
         logger.info('Debug mode enabled')
+
+    # Log configuration info
+    logger.info(
+        'Application started',
+        log_level=log_level or 'from_config',
+        log_dir=log_dir or 'logs/',
+        console_logging=log_console,
+    )
 
 
 @cli.command()
@@ -414,6 +456,91 @@ def collection_info(
     import asyncio
 
     asyncio.run(_collection_info())
+
+
+@cli.command()
+@click.option('--provider', '-p', help='LLM provider to use')
+@click.option('--vector-provider', '-vp', help='Vector database provider')
+@click.option('--collection', '-col', help='Collection name for context')
+@click.option(
+    '--max-iterations',
+    '-mi',
+    type=int,
+    default=5,
+    help='Max function calling iterations',
+)
+@click.option(
+    '--verbose', '-v', is_flag=True, help='Show detailed function calling process'
+)
+@click.argument('question', required=True)
+@click.pass_context
+def ask_with_tools(
+    ctx: click.Context,
+    provider: Optional[str],
+    vector_provider: Optional[str],
+    collection: Optional[str],
+    max_iterations: int,
+    verbose: bool,
+    question: str,
+) -> None:
+    """Ask a question using advanced function calling approach."""
+
+    async def _ask_with_tools():
+        try:
+            config_manager = ctx.obj['config_manager']
+
+            from src.services.function_calling_service import FunctionCallingService
+
+            fc_service = FunctionCallingService(config_manager)
+
+            if verbose:
+                click.echo("🤖 Processing question with function calling...")
+                click.echo(f"📋 Question: {question}")
+                click.echo(f"🔧 Max iterations: {max_iterations}")
+                click.echo(f"⚙️  LLM Provider: {provider or 'default'}")
+                click.echo(f"🗄️  Vector Provider: {vector_provider or 'default'}")
+                click.echo("=" * 50)
+
+            result = await fc_service.process_question_with_tools(
+                question=question,
+                llm_provider_name=provider,
+                vector_provider_name=vector_provider,
+                collection=collection,
+                max_iterations=max_iterations,
+            )
+
+            # Display results
+            click.echo("🤖 Answer:")
+            click.echo(result["answer"])
+
+            if verbose and result["function_calls"]:
+                calls_count = len(result['function_calls'])
+                click.echo(f"\n🔧 Function calls made ({calls_count}):")
+                for call in result["function_calls"]:
+                    args_str = ", ".join(
+                        f"{k}={v}" for k, v in call['arguments'].items()
+                    )
+                    call_str = (
+                        f"  {call['iteration']}. " f"{call['function']}({args_str})"
+                    )
+                    click.echo(call_str)
+
+            if result["sources_used"]:
+                click.echo("\n📚 Sources used:")
+                for source in result["sources_used"]:
+                    click.echo(f"  - {source}")
+
+            click.echo("\n📊 Statistics:")
+            click.echo(f"  - Iterations used: {result['iterations_used']}")
+            click.echo(f"  - Function calls: {len(result['function_calls'])}")
+
+            if result.get("metadata", {}).get("fallback_used"):
+                click.echo("  - ⚠️  Fallback to traditional RAG used")
+
+        except Exception as e:
+            click.echo(f"❌ Error: {e}", err=True)
+
+    asyncio.run(_ask_with_tools())
 
 
 def main() -> None:

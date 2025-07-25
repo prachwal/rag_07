@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 
 from src.exceptions import VectorDBError
+
 from ..base import VectorDBProvider
 
 
@@ -277,3 +278,80 @@ class FAISSProvider(VectorDBProvider):
                 results.append(result)
 
         return results
+
+    async def get_document_by_id(
+        self, document_id: str, collection_name: str = "default"
+    ) -> Optional[Dict[str, Any]]:
+        """Get document by ID from FAISS collection.
+
+        Args:
+            document_id: The document identifier (e.g., "default_54")
+            collection_name: Name of the collection to search in
+
+        Returns:
+            Document data including text and metadata, or None if not found
+        """
+        try:
+            if collection_name not in self.collections:
+                self.log_operation(
+                    "get_document_by_id_error",
+                    document_id=document_id,
+                    error=f"Collection {collection_name} does not exist",
+                )
+                return None
+
+            collection = self.collections[collection_name]
+
+            # Parse ID to get index (e.g., "default_54" -> index 54)
+            if "_" in document_id:
+                _, index_str = document_id.rsplit("_", 1)
+                try:
+                    index = int(index_str)
+
+                    # Check if index is valid
+                    if 0 <= index < len(collection['metadata']):
+                        # Get the document content and metadata
+                        text_content = collection['metadata'][index]
+                        extra_metadata = (
+                            collection['extra_metadata'][index]
+                            if index < len(collection['extra_metadata'])
+                            else {}
+                        )
+
+                        result = {
+                            "id": document_id,
+                            "text": text_content,
+                            "metadata": extra_metadata,
+                            "index": index,
+                            "collection": collection_name,
+                        }
+
+                        self.log_operation(
+                            "get_document_by_id_success",
+                            document_id=document_id,
+                            collection=collection_name,
+                            text_length=len(text_content),
+                        )
+
+                        return result
+
+                except ValueError:
+                    # Invalid index format
+                    pass
+
+            self.log_operation(
+                "get_document_by_id_not_found",
+                document_id=document_id,
+                collection=collection_name,
+            )
+            return None
+
+        except Exception as e:
+            error_msg = f"Document retrieval error: {str(e)}"
+            self.log_operation(
+                "get_document_by_id_error",
+                document_id=document_id,
+                collection=collection_name,
+                error=error_msg,
+            )
+            return None

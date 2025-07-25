@@ -1,15 +1,22 @@
 # RAG_07 - Multi-provider LLM Application with RAG Support
 
-**Uniwersalna baza aplikacji command line** dla systemów LLM z obsługą RAG (Retrieval-Augmented Generation), wieloma providerami i bazami wektorowymi.
+**Uniwersalna baza aplikacji command line** dla systemów LLM z obsługą RAG
+(Retrieval-Augmented Generation), wieloma providerami i bazami wektorowymi.
 
 ## 🚀 Funkcjonalności
 
 - **Multi-provider LLM**: OpenAI, Anthropic, Google (łatwe dodawanie nowych)
 - **Vector Databases**: FAISS, Chroma, Pinecone (extensible architecture)
-- **RAG System**: Retrieval-Augmented Generation z automatycznym chunkowaniem tekstu
+- **RAG System**: Retrieval-Augmented Generation z automatycznym chunkowaniem
+  tekstu
+- **Function Calling**: Zaawansowane iteracyjne odpytywanie z LLM
+- **Collection Management**: Zarządzanie kolekcjami wektorowymi z automatyczną
+  indeksacją
 - **Command Line Interface**: Intuitive CLI z pełną obsługą argumentów
 - **Async Architecture**: Wszystkie operacje asynchroniczne z retry/timeout
-- **Structured Logging**: JSON logging z pełnym śledzeniem operacji
+- **Advanced Logging System**: JSON structured logging z rotacją plików,
+  elastyczną konfiguracją poziomów i hierarchią priorytetów (CLI > ENV >
+  config > default)
 - **Configuration Management**: Centralized config z .env i JSON/YAML
 - **Type Safety**: Pełne typowanie z mypy validation
 - **Testing**: Comprehensive test suite z mockowaniem API
@@ -46,6 +53,7 @@ config/                  # Pliki konfiguracyjne
 ## 🛠 Skonfigurowane narzędzia formatowania
 
 ### Python
+
 - **Black** - formatter kodu Python (line-length: 88)
 - **isort** - sortowanie importów zgodnie z profilem Black
 - **Pylint** - linting kodu Python
@@ -53,6 +61,7 @@ config/                  # Pliki konfiguracyjne
 - **Ruff** - bardzo szybki linter/formatter
 
 ### TypeScript/JavaScript
+
 - **Prettier** - formatter kodu JS/TS
 - **ESLint** - linting z regułami TypeScript
 - **TypeScript** - kompilator i sprawdzanie typów
@@ -60,6 +69,7 @@ config/                  # Pliki konfiguracyjne
 ## ⚡ Szybki start
 
 ### 1. Setup środowiska
+
 ```bash
 # Uruchom setup script
 ./setup.sh
@@ -71,6 +81,7 @@ pip install -r requirements.txt
 ```
 
 ### 2. Konfiguracja
+
 ```bash
 # Edytuj .env z kluczami API
 cp .env .env.local
@@ -78,6 +89,7 @@ cp .env .env.local
 ```
 
 ### 3. Pierwsza komenda
+
 ```bash
 # Sprawdź status konfiguracji
 python src/main.py config-status
@@ -89,37 +101,86 @@ python src/main.py --help
 ## 📋 Dostępne komendy CLI
 
 ### Podstawowe operacje
+
 ```bash
-# Query do LLM
-python src/main.py query "What is Python?"
-python src/main.py query -p openai -m gpt-4 "Explain machine learning"
+# Query do LLM (z kontrolą logowania)
+./run.sh query "What is Python?"
+./run.sh --log-level WARNING query -p openai -m gpt-4 "Explain machine learning"
 
 # Dodaj tekst do vector store
-python src/main.py embed "Python is a programming language"
-python src/main.py embed -p faiss -col documents "Your text here"
+./run.sh embed "Python is a programming language"
+./run.sh --no-log-console embed -p faiss -col documents "Your text here"
 
 # Wyszukaj w vector store
-python src/main.py search "programming language"
-python src/main.py search -p faiss -col documents -l 10 "machine learning"
+./run.sh search "programming language"
+./run.sh --log-level DEBUG search -p faiss -col documents -l 10 "machine learning"
 
 # RAG query (z kontekstem)
-python src/main.py rag "What is Python used for?"
-python src/main.py rag -p openai -vp faiss -cl 5 "Explain AI"
+./run.sh rag "What is Python used for?"
+./run.sh --log-dir /custom/logs rag -p openai -vp faiss -cl 5 "Explain AI"
+
+# Function Calling (zaawansowane)
+./run.sh ask-with-tools "What are the main features of this system?" --verbose
+./run.sh --log-level ERROR ask-with-tools "Question" --verbose  # Minimize logs
 ```
 
-### Zarządzanie
+### Zarządzanie kolekcjami
+
+```bash
+# Lista kolekcji
+./run.sh list-collections
+
+# Informacje o kolekcji
+./run.sh collection-info nazwa_kolekcji
+
+# Automatyczne indeksowanie dokumentacji
+./scripts/index_documentation.sh
+
+# Demonstracja możliwości
+./scripts/collections_demo.sh
+```
+
+### Zarządzanie systemem
+
 ```bash
 # Status konfiguracji
-python src/main.py config-status
+./run.sh config-status
 
 # Lista dostępnych providerów
-python src/main.py list-providers
-python src/main.py list-providers --provider-type llm
+./run.sh list-providers
+./run.sh list-providers --provider-type llm
+
+# Lista dostępnych modeli
+./run.sh list-models
+./run.sh list-models --provider openai --format table
 ```
+
+## 📚 Dokumentacja zarządzania kolekcjami
+
+### Szybki start
+
+```bash
+# 1. Sprawdź status
+./run.sh config-status
+
+# 2. Utwórz kolekcję z dokumentami
+./run.sh embed --collection docs "$(cat README.md)"
+
+# 3. Przetestuj
+./run.sh ask-with-tools "What is this project about?" --verbose
+```
+
+### Pełna dokumentacja
+
+- **[Zarządzanie kolekcjami](docs/collections_management.md)** - Kompletny
+  przewodnik
+- **[Szybki start](docs/quick_start_collections.md)** - Praktyczny przewodnik
+- **Demonstracja**: `./scripts/collections_demo.sh` - Interaktywny tutorial
 
 ## 🧪 Automatyczne formatowanie VS Code
 
 ### VS Code Tasks (Ctrl+Shift+P → "Tasks: Run Task")
+
 - **Setup Environment** - uruchamia setup.sh
 - **Format All** - isort + black
 - **Lint (Pylint)** - sprawdzanie kodu
@@ -128,6 +189,7 @@ python src/main.py list-providers --provider-type llm
 - **Run Application** - uruchamia aplikację z --help
 
 ### Ręczne formatowanie
+
 ```bash
 # Python
 source .venv/bin/activate
@@ -145,6 +207,7 @@ npm run lint            # ESLint z automatycznymi poprawkami
 ## 🔧 Dodawanie nowych providerów
 
 ### 1. LLM Provider
+
 ```python
 # src/providers/llm/my_provider.py
 from providers.base import LLMProvider
@@ -158,12 +221,14 @@ class MyProvider(LLMProvider):
 ```
 
 ### 2. Rejestracja w Factory
+
 ```python
 # Automatyczna rejestracja w providers/base.py
 # Dodaj import w _register_default_providers()
 ```
 
 ### 3. Konfiguracja
+
 ```json
 // config/app_config.json
 {
@@ -187,8 +252,11 @@ OPENAI_API_KEY=your_openai_key_here
 ANTHROPIC_API_KEY=your_anthropic_key_here
 GOOGLE_API_KEY=your_google_key_here
 
+# Logging Settings
+LOG_LEVEL=INFO                    # DEBUG, INFO, WARNING, ERROR, CRITICAL
+LOG_DIR=logs                      # Custom log directory
+
 # Application Settings
-LOG_LEVEL=INFO
 DEBUG=false
 APP_NAME=rag_07
 
@@ -226,6 +294,41 @@ pytest tests/test_text_processor.py::TestBasicTextProcessor::test_chunk_text
 - **Template Method**: `BaseProvider` z wspólną strukturą
 - **Dependency Injection**: Providers wstrzykiwane przez Factory
 
+## 🔧 System logowania
+
+### Hierarchia konfiguracji (priorytet malejący):
+
+1. **CLI argumenty**: `--log-level DEBUG --no-log-console`
+2. **Zmienne środowiskowe**: `LOG_LEVEL=WARNING LOG_DIR=/custom/logs`
+3. **Plik konfiguracyjny**: `"log_level": "INFO"`
+4. **Wartości domyślne**: `INFO` z konsolą i plikiem
+
+### Opcje logowania:
+
+```bash
+# Kontrola poziomu
+./run.sh --log-level DEBUG command      # Szczegółowe logi
+./run.sh --log-level WARNING command    # Tylko ostrzeżenia+
+./run.sh --log-level ERROR command      # Tylko błędy
+
+# Kontrola wyjścia
+./run.sh --no-log-console command       # Tylko do pliku
+./run.sh --log-dir /custom/logs command # Własny katalog
+
+# Kombinacje
+export LOG_LEVEL=WARNING
+./run.sh --log-dir /tmp/logs --no-log-console ask-with-tools "Question"
+```
+
+### Rotacja plików:
+
+- **Lokalizacja**: `logs/rag_07.log`
+- **Rotacja**: Codzienna o północy
+- **Retencja**: 3 dni (automatyczne usuwanie)
+- **Format**: JSON structured logs
+
+📚 **Szczegółowa dokumentacja**: [System Logowania](docs/logging_system.md)
+
 ## 🎯 Cele architektoniczne
 
 1. **Single Responsibility**: Każdy plik = jedna odpowiedzialność
@@ -253,6 +356,7 @@ pytest tests/test_text_processor.py::TestBasicTextProcessor::test_chunk_text
 5. Używaj structured logging w każdej operacji
 
 ## 📝 Zainstalowane rozszerzenia VS Code
+
 ```vscode-extensions
 ms-python.python,ms-python.vscode-pylance,ms-python.black-formatter,ms-python.isort,ms-python.pylint,esbenp.prettier-vscode,dbaeumer.vscode-eslint,ms-toolsai.jupyter,github.copilot
 ```

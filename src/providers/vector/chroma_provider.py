@@ -238,3 +238,59 @@ class ChromaProvider(VectorDBProvider):
         )
 
         return formatted_results
+
+    async def get_document_by_id(
+        self, document_id: str, collection_name: str = "default"
+    ) -> Optional[Dict[str, Any]]:
+        """Get document by ID from Chroma collection.
+
+        Args:
+            document_id: The document identifier to retrieve
+            collection_name: Name of the collection to search in
+
+        Returns:
+            Document data including text and metadata, or None if not found
+        """
+        try:
+            # Get or create collection
+            collection = self.client.get_collection(name=collection_name)
+
+            # Get document by ID
+            results = collection.get(
+                ids=[document_id], include=['documents', 'metadatas']
+            )
+
+            if not results['ids'] or len(results['ids']) == 0:
+                self.log_operation(
+                    "get_document_by_id_not_found",
+                    document_id=document_id,
+                    collection=collection_name,
+                )
+                return None
+
+            # Format result
+            result = {
+                "id": document_id,
+                "text": results['documents'][0] if results['documents'] else "",
+                "metadata": results['metadatas'][0] if results['metadatas'] else {},
+                "collection": collection_name,
+            }
+
+            self.log_operation(
+                "get_document_by_id_success",
+                document_id=document_id,
+                collection=collection_name,
+                text_length=len(result["text"]),
+            )
+
+            return result
+
+        except Exception as e:
+            error_msg = f"Document retrieval error: {str(e)}"
+            self.log_operation(
+                "get_document_by_id_error",
+                document_id=document_id,
+                collection=collection_name,
+                error=error_msg,
+            )
+            return None

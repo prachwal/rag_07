@@ -63,6 +63,53 @@ class LLMProvider(BaseProvider):
         results = await self.generate_embeddings([text], model)
         return results[0] if results else []
 
+    async def chat_completion_with_functions(
+        self,
+        messages: List[Dict[str, Any]],
+        functions: List[Dict[str, Any]],
+        function_call: str = "auto",
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """Generate chat completion with function calling support.
+
+        Default fallback implementation for providers without function calling.
+        """
+        # Fallback: convert conversation to single prompt
+        prompt_parts = []
+        for message in messages:
+            role = message.get("role", "")
+            content = message.get("content", "")
+
+            if role == "system":
+                prompt_parts.append(f"System: {content}")
+            elif role == "user":
+                prompt_parts.append(f"User: {content}")
+            elif role == "assistant":
+                prompt_parts.append(f"Assistant: {content}")
+            elif role == "function":
+                # Skip function results in fallback
+                continue
+
+        prompt = "\n".join(prompt_parts)
+
+        # Generate response using regular text generation
+        response_text = await self.generate_text(
+            prompt, model=kwargs.get('model'), **kwargs
+        )
+
+        # Return in OpenAI-compatible format
+        return {
+            "choices": [{"message": {"role": "assistant", "content": response_text}}]
+        }
+
+    def supports_function_calling(self) -> bool:
+        """Check if provider supports function calling.
+
+        Default implementation returns False.
+        Override in specific providers that support function calling.
+        """
+        return False
+
     async def list_models(self, use_cache: bool = True) -> ModelListResponse:
         """List available models for this provider."""
         # Default implementation - should be overridden by specific providers
@@ -112,6 +159,21 @@ class VectorDBProvider(BaseProvider):
         self, collection_name: str, query_vector: List[float], limit: int = 10
     ) -> List[Dict[str, Any]]:
         """Search for similar vectors."""
+        pass
+
+    @abstractmethod
+    async def get_document_by_id(
+        self, document_id: str, collection_name: str = "default"
+    ) -> Optional[Dict[str, Any]]:
+        """Get document by ID from collection.
+
+        Args:
+            document_id: The document identifier to retrieve
+            collection_name: Name of the collection to search in
+
+        Returns:
+            Document data including text and metadata, or None if not found
+        """
         pass
 
     @abstractmethod
