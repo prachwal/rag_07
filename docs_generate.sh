@@ -36,10 +36,7 @@ install_deps() {
         pip install sphinx sphinx-rtd-theme myst-parser sphinx-autodoc-typehints
     fi
 
-    # Node dependencies
-    if [ -f "package.json" ]; then
-        npm install --save-dev typedoc typedoc-plugin-markdown @microsoft/tsdoc
-    fi
+    # Node dependencies removed - project is Python only
 }
 
 # Function to generate Python documentation
@@ -152,27 +149,10 @@ EOF
     echo -e "${GREEN}✅ Python documentation generated in docs/python/_build/html${NC}"
 }
 
-# Function to generate TypeScript documentation
-generate_typescript_docs() {
-    echo -e "${BLUE}📘 Generating TypeScript documentation with TypeDoc...${NC}"
-
-    # Check if TypeScript files exist
-    if [ ! -f "tsconfig.json" ]; then
-        echo -e "${YELLOW}⚠️  No tsconfig.json found, skipping TypeScript documentation${NC}"
-        return
-    fi
-
-    # Create output directory
-    mkdir -p public/docs/api
-
-    # Generate TypeDoc documentation
-    if command_exists npx; then
-        npx typedoc
-        echo -e "${GREEN}✅ TypeScript documentation generated in public/docs/api${NC}"
-    else
-        echo -e "${RED}❌ npx not found, skipping TypeScript documentation${NC}"
-    fi
-}
+# Function to generate TypeScript documentation - REMOVED (Python-only project)
+# generate_typescript_docs() {
+#     echo -e "${YELLOW}⚠️  TypeScript documentation disabled - this is a Python-only project${NC}"
+# }
 
 # Function to create unified documentation index
 create_unified_index() {
@@ -318,8 +298,8 @@ main() {
     # Generate Python documentation
     generate_python_docs
 
-    # Generate TypeScript documentation (if applicable)
-    generate_typescript_docs
+    # Generate TypeScript documentation - DISABLED (Python-only project)
+    # generate_typescript_docs
 
     # Create unified index
     create_unified_index

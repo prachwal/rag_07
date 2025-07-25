@@ -1,11 +1,12 @@
-# Gitignore file for mixed Python and TypeScript/JavaScript project
+# Gitignore file for Python project
 
 # ===== DEPENDENCIES =====
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+# Node.js dependencies (removed - Python-only project)
+# node_modules/
+# npm-debug.log*
+# yarn-debug.log*
+# yarn-error.log*
+# pnpm-debug.log*
 
 # Python packages
 __pycache__/
