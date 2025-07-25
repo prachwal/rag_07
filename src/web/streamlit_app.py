@@ -296,21 +296,6 @@ def render_chat_tab(config: Dict):
     """Render chat interface."""
     st.header("💬 Ask Questions")
 
-    # Example questions
-    st.markdown("**Example Questions:**")
-    example_questions = [
-        "What are the main features of RAG_07?",
-        "How does the system architecture work?",
-        "What LLM models are supported?",
-        "How to configure vector databases?",
-    ]
-
-    cols = st.columns(2)
-    for i, example in enumerate(example_questions):
-        with cols[i % 2]:
-            if st.button(example, key=f"example_{i}"):
-                process_question(example, config)
-
     # Question input
     question = st.text_area(
         "Your Question:",
@@ -319,16 +304,17 @@ def render_chat_tab(config: Dict):
         key="question_input",
     )
 
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        if st.button("🚀 Send Question", type="primary", use_container_width=True):
-            if question.strip():
-                process_question(question, config)
-            else:
-                st.warning("Please enter a question!")
+    # Query type selection first
+    query_type = st.selectbox("Query Type:", ["RAG", "Simple"])
 
-    with col2:
-        query_type = st.selectbox("Query Type:", ["RAG", "Simple"])
+    # Send button full width
+    if st.button("🚀 Send Question", type="primary", use_container_width=True):
+        if question.strip():
+            # Pass query_type to config for process_question
+            config["query_type"] = query_type
+            process_question(question, config)
+        else:
+            st.warning("Please enter a question!")
 
     # Display conversation history
     if st.session_state.conversation_history:
@@ -422,29 +408,29 @@ def render_vector_search_tab(config: Dict):
 
     search_query = st.text_input("Search Query:", placeholder="Enter search terms...")
 
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        limit = st.slider("Max Results:", 1, 20, 5)
-    with col2:
-        if st.button("🔍 Search", type="primary"):
-            if search_query.strip():
-                api_client = st.session_state.api_client
-                with st.spinner("Searching vector database..."):
-                    result = api_client.search_vectors(
-                        query=search_query,
-                        provider=config["vector_provider"],
-                        collection=config["collection"],
-                        limit=limit,
-                    )
+    # Suwak pod polem wyszukiwania
+    limit = st.slider("Max Results:", 1, 20, 5)
 
-                    if result:
-                        st.success(f"Found {len(result['results'])} results")
-                        for i, text in enumerate(result["results"], 1):
-                            st.markdown(f"**Result {i}:**")
-                            st.text(text)
-                            st.markdown("---")
-            else:
-                st.warning("Please enter a search query!")
+    # Przycisk wyszukiwania
+    if st.button("🔍 Search", type="primary", use_container_width=True):
+        if search_query.strip():
+            api_client = st.session_state.api_client
+            with st.spinner("Searching vector database..."):
+                result = api_client.search_vectors(
+                    query=search_query,
+                    provider=config["vector_provider"],
+                    collection=config["collection"],
+                    limit=limit,
+                )
+
+                if result:
+                    st.success(f"Found {len(result['results'])} results")
+                    for i, text in enumerate(result["results"], 1):
+                        st.markdown(f"**Result {i}:**")
+                        st.text(text)
+                        st.markdown("---")
+        else:
+            st.warning("Please enter a search query!")
 
 
 def render_add_documents_tab(config: Dict):
